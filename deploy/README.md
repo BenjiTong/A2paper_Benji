@@ -21,7 +21,10 @@ to your directory.
 
 ## generate the EC2 server
 
-ansible-playbook main.yml -t provision -i inventories/hosts
+ansible-playbook -v -t provision -i inventories/hosts main.yml 
 
 Be careful, you need to prepare the aws-cli environment at first. (You should run "aws configure".)
 
+## install nginx and tomcat
+
+To Be Done
