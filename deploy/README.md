@@ -28,3 +28,7 @@ Be careful, you need to prepare the aws-cli environment at first. (You should ru
 ## install nginx and tomcat
 
 To Be Done
+
+## deploy java web
+
+To Be Done
