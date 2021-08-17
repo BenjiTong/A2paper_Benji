@@ -11,16 +11,16 @@ paper/   all the latex files
 
 ## about git flow
 
-To save times for us, using the commands like below：
+节省大家时间，用下面的命令：
 
-git clone git@github.com:A2Inc/A2.git    # clone the project
+git clone git@github.com:A2Inc/A2.git    第一次初始化项目
 
-git checkout -b ZC  # checkout and generate your own branch
+git checkout -b ZC  切到自己的分支，ZC换成你自己
 
-vim thisisZC .... # coding with IDE you like
+vim thisisZC .... 写你的代码
 
-git commit -am 'update something'   # commit with the message 
+git commit -am 'update something'   写一下为啥提交 
 
-git push origin ZC   # push to github
+git push origin ZC   推到远程你自己的分支里
 
-You only need to repeat the last three steps above and open the url https://github.com/A2Inc/A2/pulls to create a "pull request"
+以后的时间只需要重复后面三步，再用游览器打开 https://github.com/A2Inc/A2/pulls 生成一个pull request
