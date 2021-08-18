@@ -1,2 +1,0 @@
- name: destory EC2 instance
-  command: "aws ec2 terminate-instances --instance-ids {{ subnet_id }}"

@@ -1,0 +1,17 @@
+[local]
+localhost ansible_connection=local ansible_python_interpreter=/Users/chenzhen/Documents/workspace/compx527/bin/python
+
+[nginxservers]
+#nginxservers
+
+[tomcatservers]
+#tomcatservers
+
+[webservers]
+#webservers
+13.250.18.195 ansible_ssh_private_key_file=~/.ssh/cz_sg-ec2-key.pem ansible_user=ubuntu
+54.255.179.200 ansible_ssh_private_key_file=~/.ssh/cz_sg-ec2-key.pem ansible_user=ubuntu
+
+[dbservers]
+#dbservers
+

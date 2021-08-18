@@ -1,3 +1,8 @@
+initial: false
+terminate: false
+
+debug: true
+
 ec2_key_name: "sg"
 ec2_private_key_dir: "~/.ssh/cz_sg-ec2-key.pem"
 ec2key_secondary: "cz_sg-ec2-key-secondary"
@@ -6,5 +11,5 @@ region: ap-southeast-1
 instance_type: t2.micro
 security_group: "webservers_sg"
 subnet_id: subnet-c177d989
-image: ami-07d6d4e0fc11e9dd7
-
+    image: ami-07d6d4e0fc11e9dd7
+hosts_file: "./hosts"
