@@ -8,6 +8,20 @@
   roles:
     - common
 
+- name: install and configure nginx
+  hosts: nginxservers
+  remote_user: root
+
+  roles:
+    - nginx
+
+- name: install and configure tomcat
+  hosts: tomcatservers
+  remote_user: root
+
+  roles:
+    - tomcat
+
 - name: configure and deploy the webservers and application code
   hosts: webservers
   remote_user: root

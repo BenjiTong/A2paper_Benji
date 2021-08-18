@@ -7,9 +7,11 @@ deploy/  all the ansible project
 
 paper/   all the latex files
 
+java/    appserver
 
+data/     data processor
 
-## about git flow
+## About git flow
 
 To save times for us, using the commands like below：
 
@@ -39,3 +41,7 @@ $ checkout [YourBranchName]
 $ git merge main
 
 ```
+
+## Auto deploy
+
+Ansible is used for the automatic deployment. Readme file is in the deploy directory.
