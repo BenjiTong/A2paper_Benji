@@ -1,0 +1,19 @@
+---
+- name: apt update
+  apt:
+    update_cache: yes
+    force_apt_get: yes
+    cache_valid_time: 1800
+  become: yes
+
+- name: install nginx
+  apt: name=nginx state=latest
+  become: yes
+  
+- name: write config
+  template: src=webserver.conf.j2 dest=/etc/nginx/sites-enabled/webserver.conf
+  notify:
+    - restart nginx
+
+- name: ensure nginx is running
+  service: name=nginx state=started

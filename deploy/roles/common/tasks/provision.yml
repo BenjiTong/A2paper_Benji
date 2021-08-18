@@ -42,6 +42,16 @@
     line: "{{ item }} ansible_ssh_private_key_file={{ ec2_private_key_dir }} ansible_user=ubuntu"
   loop: "{{ ec2_ip.stdout_lines }}"
 
+- name: Add the newly created EC2 instance(s) to the group_vars file
+  lineinfile:
+    dest: "./group_vars/all"
+    regexp: '^{{ server_type }}'
+    insertafter: "^#{{ server_type }}"
+    line: "{{ server_type }}{{ my_idx }}: {{ item }}"
+  loop: "{{ ec2_ip.stdout_lines }}"
+  loop_control:
+    index_var: my_idx
+
 - name: Wait for SSH to come up
   wait_for:
     host: "{{ item }}"
