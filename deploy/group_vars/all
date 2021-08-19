@@ -1,5 +1,5 @@
 initial: false
-terminate: true
+terminate: false
 
 debug: true
 
@@ -15,10 +15,14 @@ image: ami-0d058fe428540cd89
     #ami-07d6d4e0fc11e9dd7
 hosts_file: "./hosts"
 
+
 #webservers
+
 
 #tomcatservers
 
+
 #nginxservers
+
 
 #dbservers
