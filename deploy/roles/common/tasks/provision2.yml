@@ -2,8 +2,8 @@
 
 - name: Create a security group
   ec2_group:
-    name: "{{ security_group }}"
-    description: The very insecure security group
+    name: "zone_b_group"
+    description: The security group from zone B
     region: "{{ region }}"
     rules:
       - proto: tcp
@@ -28,7 +28,7 @@
   register: ec2_sec_group
 
 - name: Create EC2 instance
-  command: "aws ec2 run-instances --image-id {{ image }} --count 1 --instance-type {{ instance_type }} --key-name {{ ec2_key_name }} --security-group-ids {{ ec2_sec_group.group_id }}  --subnet-id {{ subnet_id }}"
+  command: "aws ec2 run-instances --image-id {{ image }} --count {{inst_count}} --instance-type {{ instance_type }} --key-name {{ ec2_key_name }} --security-group-ids {{ ec2_sec_group.group_id }}  --subnet-id subnet-ba94e1e3"
 
 - name: Sleep for 60 seconds
   pause:
