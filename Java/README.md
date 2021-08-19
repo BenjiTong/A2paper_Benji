@@ -1,0 +1,1 @@
+https://maven.apache.org/download.cgi?Preferred=ftp://ftp.osuosl.org/pub/apache/
