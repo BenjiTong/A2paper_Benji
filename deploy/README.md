@@ -85,6 +85,12 @@ ansible-playbook -v -i hosts site.yml -t tomcat
 
 ```
 
+## deploy java app
+
+Download maven from here https://maven.apache.org/download.cgi?Preferred=ftp://ftp.osuosl.org/pub/apache/
+
+Unzip the maven and update 
+
 Install and configure java app:
 
 ```shell

@@ -12,6 +12,6 @@ public class HelloWorldController {
 	@RequestMapping("/")
 	public String welcome(Map<String, Object> model) {
 		model.put("message", this.message);
-		return "helloWorld";
+		return "HelloWorld.jsp";
 	}
 }
