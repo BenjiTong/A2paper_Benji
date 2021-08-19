@@ -1,3 +1,0 @@
----
-
-managing_ubuntu: "{{ (ansible_distribution == 'Ubuntu') | bool }}"

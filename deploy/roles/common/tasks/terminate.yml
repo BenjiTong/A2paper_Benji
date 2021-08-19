@@ -1,0 +1,9 @@
+---
+  
+- name: get all instances
+  shell: "aws ec2 describe-instances --query 'Reservations[*].Instances[*].[State.Name,InstanceId,PublicIpAddress]' --output text | grep running | awk '{print $2}'"
+  register: ec2_instance
+
+- name: terminate
+  shell: "aws ec2 terminate-instances --instance-ids {{item}}"
+  loop: "{{ec2_instance.stdout_lines}}"

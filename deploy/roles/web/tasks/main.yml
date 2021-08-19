@@ -1,0 +1,7 @@
+---
+# These tasks from web.
+
+- name: debug from web
+  debug:
+    msg: "this task is from web debug"
+  when: debug
