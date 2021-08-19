@@ -1,7 +1,7 @@
 initial: 
     false
 terminate: 
-    false
+    true
 
 debug: true
 
@@ -23,17 +23,12 @@ webservers:
 
 tomcatservers:
 #tomcatservers
-    - 172.31.40.87
-    - 172.31.41.241
-
+   
 
 
 nginxservers:
 #nginxservers
-    - 172.31.0.180
-    - 172.31.45.168
-
-
+  
 
 dbservers:
 #dbservers
