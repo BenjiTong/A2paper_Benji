@@ -89,9 +89,17 @@ ansible-playbook -v -i hosts site.yml -t tomcat
 
 Download maven from here https://maven.apache.org/download.cgi?Preferred=ftp://ftp.osuosl.org/pub/apache/
 
-Unzip the maven and update 
+Unzip the maven you will get the mvn command.
 
-Install and configure java app:
+```shell
+
+mvn package
+
+cp web-0.0.1-SNAPSHOT.war A2/deploy/roles/java/files/
+
+```
+
+Deploy java app:
 
 ```shell
 

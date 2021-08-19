@@ -1,0 +1,6 @@
+- name: copy the war file
+  copy: src=web-0.0.1-SNAPSHOT.war dest={{ tomcat_root }}
+
+- name: restart tomcat
+  service: name=tomcat9 state=restarted
+  become: yes

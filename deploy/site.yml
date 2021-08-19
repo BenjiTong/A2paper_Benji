@@ -24,12 +24,14 @@
       tags: 
         - tomcat
 
-- name: configure and deploy the webservers and application code
-  hosts: webservers
+- name: build java project
+  hosts: tomcatservers
   remote_user: root
-
   roles:
-    - web
+    - role: java
+      tags: 
+        - java
+ 
 
 - name: deploy MySQL and configure the databases
   hosts: dbservers
