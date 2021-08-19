@@ -76,3 +76,19 @@ Install and configure nginx:
 ansible-playbook -v -i hosts site.yml -t nginx
 
 ```
+
+Install and configure tomcat:
+
+```shell
+
+ansible-playbook -v -i hosts site.yml -t tomcat
+
+```
+
+Install and configure java app:
+
+```shell
+
+ansible-playbook -v -i hosts site.yml -t java
+
+```

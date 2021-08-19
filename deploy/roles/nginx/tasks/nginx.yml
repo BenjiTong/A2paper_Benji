@@ -9,11 +9,16 @@
 - name: install nginx
   apt: name=nginx state=latest
   become: yes
-  
-- name: write config
-  template: src=webserver.conf.j2 dest=/etc/nginx/sites-enabled/webserver.conf
-  notify:
-    - restart nginx
-
+   
 - name: ensure nginx is running
   service: name=nginx state=started
+  become: yes
+
+- name: write config
+  template: src=webserver.conf.j2 dest=/etc/nginx/sites-enabled/default
+  notify:
+    - restart nginx
+  become: yes
+
+
+

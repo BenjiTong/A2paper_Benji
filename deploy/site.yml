@@ -19,9 +19,10 @@
 - name: install and configure tomcat
   hosts: tomcatservers
   remote_user: root
-
   roles:
-    - tomcat
+    - role: tomcat
+      tags: 
+        - tomcat
 
 - name: configure and deploy the webservers and application code
   hosts: webservers
