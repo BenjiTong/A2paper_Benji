@@ -1,6 +1,6 @@
 upstream tomcat {
-    server {{ tomcatservers0 }}:8080;
-    server {{ tomcatservers1 }}:8080;
+    server {{ tomcatservers[0] }}:8080;
+    server {{ tomcatservers[1] }}:8080;
 }
 
 server {

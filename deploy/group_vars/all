@@ -1,5 +1,7 @@
-initial: false
-terminate: false
+initial: 
+    false
+terminate: 
+    false
 
 debug: true
 
@@ -14,15 +16,24 @@ subnet_id: subnet-c177d989
 image: ami-0d058fe428540cd89
     #ami-07d6d4e0fc11e9dd7
 hosts_file: "./hosts"
+tomcat_root: "/var/lib/tomcat9/webapps/ROOT/"
 
-
+webservers:
 #webservers
 
 
+
+tomcatservers:
 #tomcatservers
 
 
+
+nginxservers:
 #nginxservers
 
 
+
+dbservers:
 #dbservers
+
+

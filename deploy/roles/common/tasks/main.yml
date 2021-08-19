@@ -36,15 +36,15 @@
 
 # 2 * webservers
 
-- include_tasks: provision.yml
-  vars:
-    server_type: webservers
-  when: initial
+#- include_tasks: provision.yml
+#  vars:
+#    server_type: webservers
+#  when: initial
 
-- include_tasks: provision.yml
-  vars:
-    server_type: webservers
-  when: initial
+#- include_tasks: provision.yml
+#  vars:
+#    server_type: webservers
+#  when: initial
  
 
 - include_tasks: terminate.yml
