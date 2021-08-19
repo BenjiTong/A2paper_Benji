@@ -34,3 +34,15 @@ https://www.jb51.net/softjc/730336.html
 Vue + VS code configue  
 https://blog.zuiyu1818.cn/posts/VScode_Vue.html 
 - - -
+8-19日
+------
+#### 早会
+和晟竹多交流，把Vue工程整进A2项目里，出一个界面
+
+#### pull request
+在paper下建立存放每天日志的文件
+
+#### Frontend
+1. Vue实战阅读
+2. 项目设置新工程，加入Index和Login简单页面
+- - -
