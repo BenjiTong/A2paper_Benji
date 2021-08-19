@@ -11,5 +11,18 @@ region: ap-southeast-1
 instance_type: t2.micro
 security_group: "webservers_sg"
 subnet_id: subnet-c177d989
-    image: ami-07d6d4e0fc11e9dd7
+image: ami-0d058fe428540cd89
+    #ami-07d6d4e0fc11e9dd7
 hosts_file: "./hosts"
+
+
+#webservers
+
+
+#tomcatservers
+
+
+#nginxservers
+
+
+#dbservers

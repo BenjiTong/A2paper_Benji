@@ -1,0 +1,51 @@
+---
+# These tasks from common.
+
+- name: debug from common
+  debug:
+    msg: "this task is from common debug"
+  when: debug
+
+
+# 2 * nginxservers
+
+- include_tasks: provision.yml
+  vars:
+    server_type: nginxservers
+  when: initial
+  tags:
+    - nginx
+
+- include_tasks: provision.yml
+  vars:
+    server_type: nginxservers
+  when: initial
+
+
+# 2 * tomcatservers
+
+- include_tasks: provision.yml
+  vars:
+    server_type: tomcatservers
+  when: initial
+
+- include_tasks: provision.yml
+  vars:
+    server_type: tomcatservers
+  when: initial
+
+# 2 * webservers
+
+- include_tasks: provision.yml
+  vars:
+    server_type: webservers
+  when: initial
+
+- include_tasks: provision.yml
+  vars:
+    server_type: webservers
+  when: initial
+ 
+
+- include_tasks: terminate.yml
+  when: terminate 
