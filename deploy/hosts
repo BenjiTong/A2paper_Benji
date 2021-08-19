@@ -5,15 +5,12 @@ localhost ansible_connection=local ansible_python_interpreter=/Users/chenzhen/Do
 #webservers
 
 
-
 [tomcatservers]
 #tomcatservers
 
 
-
 [nginxservers]
 #nginxservers
-
 
 
 [dbservers]

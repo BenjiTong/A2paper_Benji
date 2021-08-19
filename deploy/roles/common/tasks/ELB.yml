@@ -1,0 +1,25 @@
+---
+
+- name: get all instances
+  shell: "aws ec2 describe-instances --query 'Reservations[*].Instances[*].[State.Name,InstanceId,PublicIpAddress]' --output text | grep running | awk '{print $2}'"
+  register: nginx_ec2_instance
+ 
+- name: create nginx ELB
+  ec2_elb_lb:
+    name: "HttpELB"
+    state: present
+    region: "{{ region }}"
+    instance_ids:
+      - "{{item}}"
+    zones:
+      - "{{ region }}b"
+      - "{{ region }}c"
+    listeners:
+      - protocol: http
+        load_balancer_port: 80
+        instance_port: 80
+    stickiness:
+      type: application
+      enabled: yes
+      cookie: SESSIONID
+  loop: "{{nginx_ec2_instance.stdout_lines}}"

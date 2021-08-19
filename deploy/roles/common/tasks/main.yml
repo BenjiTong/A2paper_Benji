@@ -9,30 +9,36 @@
 
 # 2 * nginxservers
 
-- include_tasks: provision.yml
+- include_tasks: provision1.yml
   vars:
     server_type: nginxservers
+    inst_count: 1
   when: initial
   tags:
     - nginx
 
-- include_tasks: provision.yml
+- include_tasks: provision2.yml
   vars:
     server_type: nginxservers
+    inst_count: 1
   when: initial
+  tags:
+    - nginx
+
+- include_tasks: ELB.yml
+  when: initial
+  tags:
+    - nginx
 
 
 # 2 * tomcatservers
 
-- include_tasks: provision.yml
+- include_tasks: provision1.yml
   vars:
-    server_type: tomcatservers
+    server_type: tomcatservers    
+    inst_count: 2
   when: initial
 
-- include_tasks: provision.yml
-  vars:
-    server_type: tomcatservers
-  when: initial
 
 # 2 * webservers
 
