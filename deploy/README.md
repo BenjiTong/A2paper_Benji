@@ -95,7 +95,13 @@ Unzip the maven you will get the mvn command.
 
 mvn package
 
-cp web-0.0.1-SNAPSHOT.war A2/deploy/roles/java/files/
+```
+
+modify group_vars/all to your own war_dir:
+
+```shell
+
+war_dir: "/Users/chenzhen/Documents/workspace/A2/java/target/web-0.0.1-SNAPSHOT/"
 
 ```
 
