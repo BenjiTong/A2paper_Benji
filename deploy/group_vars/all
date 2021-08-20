@@ -5,16 +5,21 @@ terminate:
 
 debug: true
 
-ec2_key_name: "sg"
+war_dir: "/Users/chenzhen/Documents/workspace/A2/java/target/web-0.0.1-SNAPSHOT/"
 ec2_private_key_dir: "~/.ssh/cz_sg-ec2-key.pem"
+
+
+ec2_key_name: "sg"
 ec2key_secondary: "cz_sg-ec2-key-secondary"
 ec2key_priv_secondary_dir: "~/.ssh/cz_sg-ec2-key-secondary.pem"
+
+
 
 region: ap-southeast-1
 instance_type: t2.micro
 image: ami-0d058fe428540cd89
 hosts_file: "./hosts"
-tomcat_root: "/var/lib/tomcat9/webapps/ROOT/"
+tomcat_root: "/var/lib/tomcat9/webapps/ROOT" 
 
 webservers:
 #webservers

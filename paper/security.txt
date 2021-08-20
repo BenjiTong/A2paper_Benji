@@ -1,1 +1,12 @@
 1.tomcat的端口进行了内部ip限制，外部ip不能访问。
+2.IAM:
+root账号打开MFA，set up了virtual MFA device
+create access keys to specific region: ap-southeast-1
+
+Deactivate or delete the access keys for the root user. Instead, use access keys attached to an IAM user to improve security.
+ 
+create user: A2_DevOps  group:admin  attached permissions:administrator access
+use  https://154096909498.signin.aws.amazon.com/console login aws
+
+
+

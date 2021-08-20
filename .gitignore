@@ -147,3 +147,22 @@ build/
 
 ### VS Code ###
 .vscode/
+java/.DS_Store
+
+Frontend/.DS_Store
+Frontend/node_modules/
+Frontend/dist/
+Frontend/npm-debug.log*
+Frontend/yarn-debug.log*
+Frontend/yarn-error.log*
+Frontend/test/unit/coverage/
+Frontend/test/e2e/reports/
+Frontend/selenium-debug.log
+
+# Editor directories and files
+Frontend/.idea
+Frontend/.vscode
+Frontend/*.suo
+Frontend/*.ntvs*
+Frontend/*.njsproj
+Frontend/*.sln
