@@ -44,7 +44,7 @@ ansible-playbook -v -i hosts site.yml
 
 Be careful, you need to prepare the aws-cli environment at first. (You should run "aws configure".)
 
-Totally, 6 EC2 instances could be generated after running. (nginx*2, tomcat*2, java*2)
+Totally, 4 EC2 instances could be generated after running. (nginx*2, tomcat*2)
 
 ## terminate the servers
 

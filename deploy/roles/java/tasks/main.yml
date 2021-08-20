@@ -1,5 +1,7 @@
+---
+
 - name: copy the war file
-  copy: src=web-0.0.1-SNAPSHOT.war dest={{ tomcat_root }}
+  copy: src={{ war_dir }} dest={{ tomcat_root }}
   become: yes
   
 - name: restart tomcat
