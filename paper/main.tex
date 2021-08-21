@@ -1,164 +1,288 @@
 \documentclass[conference]{IEEEtran}
-\usepackage[utf8]{inputenc}
-
-\title{COMPX527 Assignment 1 Report}
-
-\author{
-\IEEEauthorblockN{Glenn Cumming}
-\IEEEauthorblockA{Department of Computer Science\\
-  \textit{University of Waikato}\\
-  Hamilton, New Zealand\\
-  \texttt{glenn@hif.nz}}
-  \and
-\IEEEauthorblockN{Mitchell Grout}
-\IEEEauthorblockA{Department of Computer Science\\
-  \textit{University of Waikato}\\
-  Hamilton, New Zealand\\
-  \texttt{mjg44@students.waikato.ac.nz}}
-  \and
-\IEEEauthorblockN{Shufen Li}
-\IEEEauthorblockA{Department of Computer Science\\
-  \textit{University of Waikato}\\
-  Hamilton, New Zealand\\
-  \texttt{sl302@students.waikato.ac.nz}}
-  \and
-\IEEEauthorblockN{Sunny Chikara}
-\IEEEauthorblockA{Department of Computer Science\\
-  \textit{University of Waikato}\\
-  Hamilton, New Zealand\\
-  \texttt{sc420@students.waikato.ac.nz}}
-  \and
-\IEEEauthorblockN{YingJun Huang}
-\IEEEauthorblockA{Department of Computer Science\\
-  \textit{University of Waikato}\\
-  Hamilton, New Zealand\\
-  \texttt{yh320@students.waikato.ac.nz}}
-}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
+
+\title{Conference Paper Title*\\
+{\footnotesize \textsuperscript{*}Note: Sub-titles are not captured in Xplore and
+should not be used}
+\thanks{Identify applicable funding agency here. If none, delete this.}
+}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{3\textsuperscript{rd} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{4\textsuperscript{th} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{5\textsuperscript{th} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+\and
+\IEEEauthorblockN{6\textsuperscript{th} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+}
 
 \maketitle
 
 \begin{abstract}
-We designed an Object Detection web service on the AWS Cloud Provider, using Terraform for programmable infrastrucure, Ansible for deployment, and Python for the web service and object detection.
+This document is a model and instructions for \LaTeX.
+This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
+or Math in Paper Title or Abstract.
 \end{abstract}
+
 \begin{IEEEkeywords}
-AWS, COMPX527, Terraform, Ansible, Flask, Python, Object Detection, Retinanet
+component, formatting, style, styling, insert
 \end{IEEEkeywords}
-\section{Solution Summary}
-The Flask Object Detection service is a load balanced HTTP service deployed in AWS EC2, using the AWS ELB load balancer. The service can accept a JPG image and run object detection on it, and returns the resulting image with identified objects highlighted.
-\section{Motivation}
-We decided on object detection in the cloud in order to learn and appricate the challenges of providing a stateless, scalbale service that could be used for a variey of other projects. Examples included
-\begin{itemize}
-\item Contexutal threat analysis, such as humans detected in an area which should only include livestock.
-\item Numbercial anyalisis, such as the number of a species of wildlife in an area over time.
-\item Absence detection, indetifying objects that should be in an image but are not
-\end{itemize}
-\section{Proposed Solution}
-An Amazon Web Services based cluster of web servers taking images from clients and returning images with bionding boxed indetified objects plus json formatted data, behind an Eleastic Load Balancer. The cluster will be horizontally scalable by adding web servers, and accessable via curl or any other HTTP client that can perform HTTP POST requests. It was trained used the AWS COCO data set \footnote{https://registry.opendata.aws/fast-ai-coco/}, and also used the set to for testing and demonstrations. 
-\section{Solution Architecture}
-We decided to use a load balanced web service architecture, a very common and well understood model with common solutions to scalability and uptime. We have the following components and features:
-\subsection{The Image Processing Server}
-The project uses the Retinanet based Object Detection developed by Keras
-\footnote{https://github.com/fizyr/keras-retinanet}. The web service was developed in Python using a Flask server \footnote{https://pypi.org/project/Flask/}.\par
-The server recives via HTTP JPG formatted image, and returns the image with bounding boxes around identified objects, plus JSON data of the images.
-\subsection{The Load Balancer}
-The object detection being inhernetly slow forces the use of laod balancing and scaling techniques. Using the AWS Elastic Load Balancer allowed us balance the HTTP requests over two or more EC2 servers running the Flask servers. We could create as many Flask servers as we wished, although of course this lent itself to waisted compute resources. Though we had great sucess early on using AWS AutoScaling Groups, which allows a lower and upper limit of EC2 instances running our Flask server to be defined, this functionality was not avalible in the student accounts.
-\subsection{The Web User Interface}
-In order to have a better demo, it was decided to go ahead and produce a web site interface that would allow uploading 
-\subsection{The Web API}
-The intended standard way to interact with the Flask Object Detection Cluster is to access it via HTTP calls using the url http://\textless load\_balancer\_fqdn\textgreater/detect. As the system is inteneded for the use of non-private images no ssl was implemented on the load balancer, though it is supported.
-\subsection{Amazon Web Services Cloud}
-The service running on the Amazon Web Services Cloud, the required choice of the assignment. Though later in lectures there it wa smentioned we could look in to using other Cloud Service Providers, we decied we had already made enough progress to commit ourselves to AWS for this project. Though we did use terraform, which supports IaaS deployments with mulitple CSP, in case we had a need to effect a change quickly.
 
-\section{Technology}
-The following are the significant technologies we used in this assignment.
-\subsection{Retinanet}
-Retinanet is an open source object detection neural net. This technology was chosen for the following reasons \footnote{}.
+\section{Introduction}
+This document is a model and instructions for \LaTeX.
+Please observe the conference page limits. 
+
+\section{Ease of Use}
+
+\subsection{Maintaining the Integrity of the Specifications}
+
+The IEEEtran class file is used to format your paper and style the text. All margins, 
+column widths, line spaces, and text fonts are prescribed; please do not 
+alter them. You may note peculiarities. For example, the head margin
+measures proportionately more than is customary. This measurement 
+and others are deliberate, using specifications that anticipate your paper 
+as one part of the entire proceedings, and not as an independent document. 
+Please do not revise any of the current designations.
+
+\section{Prepare Your Paper Before Styling}
+Before you begin to format your paper, first write and save the content as a 
+separate text file. Complete all content and organizational editing before 
+formatting. Please note sections \ref{AA}--\ref{SCM} below for more information on 
+proofreading, spelling and grammar.
+
+Keep your text and graphic files separate until after the text has been 
+formatted and styled. Do not number text heads---{\LaTeX} will do that 
+for you.
+
+\subsection{Abbreviations and Acronyms}\label{AA}
+Define abbreviations and acronyms the first time they are used in the text, 
+even after they have been defined in the abstract. Abbreviations such as 
+IEEE, SI, MKS, CGS, ac, dc, and rms do not have to be defined. Do not use 
+abbreviations in the title or heads unless they are unavoidable.
+
+\subsection{Units}
 \begin{itemize}
-\item Free Open Source project obviously beneficial for a project with a limited budget.
-\item Python 3 for rapid development and deploymewnt. With a mix of experinced and less experinced team members this was particulary useful.
-\item Specific instructions using it with the dataset avaliable on the Registry of Open Data on AWS \footnote{https://registry.opendata.aws/fast-ai-coco/}
-\end{itemize}
-\subsection{Terraform}
-Terraform was given in as an example of the provisioning service to use in this assignment. AWS CloudFormation was another option suggested. The decision to go with terraform rather than CloudFormation was based on the following
-\begin{itemize}
-  \item CloudFormation is prioritory and is specific to AWS cloud offierings. Though this assigmnet is on a small and temporty scale, we still not want to use a technology that would create vendor lockin
-  \item Terraform supports provisioning many different platforms, both open standards and priopritary, such as Azure, Goolge Cloud, Kubernetes and OpenStack \footnote{https://aws.amazon.com/cloudformation/}. Developng expericne in deployments with terraform therefore was demied to be more useful.
-\end{itemize}
-\subsection{Ansible}
-Though Terraform is capable of running commands post-install in order to install services and other software needed for our cluster, our cluster used Ansible playbooks instead. Though it meant learning another technology, we demeed a good use of our time since:
-\begin{itemize}
-  \item Terraform can only run scripts, which would have to be created.
-  \item Ansible's langauge is very flxible and is created specifally for the purpose of delpoymnet.
-  \item This is a recommended approach by HashiCorp, the devlopers of Terraform. \footnote{https://www.hashicorp.com/resources/ansible-terraform-better-together}
+\item Use either SI (MKS) or CGS as primary units. (SI units are encouraged.) English units may be used as secondary units (in parentheses). An exception would be the use of English units as identifiers in trade, such as ``3.5-inch disk drive''.
+\item Avoid combining SI and CGS units, such as current in amperes and magnetic field in oersteds. This often leads to confusion because equations do not balance dimensionally. If you must use mixed units, clearly state the units for each quantity that you use in an equation.
+\item Do not mix complete spellings and abbreviations of units: ``Wb/m\textsuperscript{2}'' or ``webers per square meter'', not ``webers/m\textsuperscript{2}''. Spell out units when they appear in text: ``. . . a few henries'', not ``. . . a few H''.
+\item Use a zero before decimal points: ``0.25'', not ``.25''. Use ``cm\textsuperscript{3}'', not ``cc''.)
 \end{itemize}
 
-\subsection{Github}
-We used github for source control of all documents and code. This was chosen over other solutions suc h as SVN and Mecurial due to the familiarity of some of the team members with git. Others in our team have leanrt cloning, pulling and branching. \footnote{https://github.com/}
-\subsection{Slack}
-As we needed to communicate effectively over a period of weeks without seeing each other often, we decided to use the colloberation software Slack \footnote{https://slack.com/}. We used a free account, and created a channel to allow us to privately communicate about our work. It was used extensively and allowed constant effecteive communication.
-\subsection{Trello}
-In ordr to break up and manage tasks we created a Kanban Board in Trello \footnote{https://trello.com/}. This got us started with basic learning and setup tasks early on, but as the project progressed we tended to move to the use of Slack to define and assign tasks and workloads.
-\subsection{LaTex}
-LaTex \footnote{https://www.latex-project.org/} is the accepted standard for scientific papers; therefore although the assignment pointed us to the IEEE A4 standard for reporting, we opted to use the LaTex standard. This gave us very useful experince in using LaTex for proper report formatting.
-This report was created in LaTex using the IEEEtran document class provided by IEEE template avaliable at
-\footnote{https://www.ieee.org/conferences/publishing/templates.html}
-, and generated into PDF by Gnome LaTeX
-\footnote{https://wiki.gnome.org/Apps/GNOME-LaTeX}
-\subsection{Flask}
-The decision to develop and depoly a service using the keras-retinanet Python library immediately suggested to us we should again use Python to provide the web service. Our team had develpoers with experince in both Tornado and Flask; Flask was used as the web service development fell on the person with Flask experince. Both solutions would have been suitable.
-\section{Existing object detection soltutions}
-There is a wide range of cloud and non cloud solutions. A comparison of these to our own solution is beyound the scope of this document. Those provided by the large Cloud Service Providers includes:
-\subsection{Rekognition}
-Amazon's object detection solution \footnote{https://aws.amazon.com/rekognition/}.
-\subsection{Vision AI}
-Google's object detection solution \footnote{https://cloud.google.com/vision/}.
-\subsection{Computer Vision}
-Microsofts object detection solution \footnote{https://azure.microsoft.com/en-us/services/\\cognitive-services/computer-vision/}.
+\subsection{Equations}
+Number equations consecutively. To make your 
+equations more compact, you may use the solidus (~/~), the exp function, or 
+appropriate exponents. Italicize Roman symbols for quantities and variables, 
+but not Greek symbols. Use a long dash rather than a hyphen for a minus 
+sign. Punctuate equations with commas or periods when they are part of a 
+sentence, as in:
+\begin{equation}
+a+b=\gamma\label{eq}
+\end{equation}
 
-\section{Security and Vunlerability Assessment}
-\subsection{Data Security}
-The Flask Object Detection Cluster was specifically created to be stateless and public. Interception of HTTP requests and results can be easily interceptied by third parties with access to the networks between the client and the service. Users of the service should be aware that any images sent or data recived from the service could be illictly obtained, mallicously modified, or corrupted in transit. \par
-Migtigation could be acheived by adding SSL encryption and offloading it at the load balancer.
-\subsection{Access Security}
-\paragraph{Identity and Access Management}
-Management access of the resources residing on AWS is protected via the AWS Identity and Access Management (IAM) system \footnote{https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html}. We used individual accounts provided by the course. If an account was compromised the it would allow malicous actors to shut down services, or replace the current services with malacoius alternatives. For example, they cloud replace an instance with one that will return malware embeded in an image. \par
-Mitigation can be using good protection practices for authentication information, Two Factor Auth (2FA), regular monitoring of the service with a set of well known HTTP requests checked against expected results.
-\paragraph{Server Access}
-The Flask servers are publically accessable via SSH, needed for deployment. If the key pair is compromised or the keys obtained then root access to the Flask servers cloud be obtained. This would grant the attacker full acccess and the ability to use the server's resources for there own purposes. \par
-Migragtion can be using ssh key passwords, encrypted storage of the keys, checking server hashes, and keeping ssh software up to date with security patches.
-\subsection{Network Security}
-We used AWS Security Groups to restrict the Load Balancer to only ingress traffic port 80. The Image Processers restricted to port 22 and 80. \par
-Allowing direct access to the service port is a known problem that could allow an attaacker to easily DDOS a single server, bypassing the Load Balancer. To mitigate this we need to work out how to define the CIDR range in the security group to match the internal IP of the Load Balancer.
-The service is load banced, but we where not able to use AutoScaling Groups due to our account restrictions. This results in having to manually create additional servers to cope with increased requests, and so a DDOS would be more effective since a human will have to respond to any such attack.\par
-To mitigate this we should move to an account that allows the use of Auto Scaling Groups.  
-\subsection{Monitoring and Security}
-AWS EC2 instance monitoring was enabled during the terraform creation of the cluster. ELB monitors the avalibility of the Flask HTTP servers. The lack of external monitoring means that we are totally dependent on AWS for security checks and uptime monitoring. \par
-Mitigation of the lack of monitoring is obviousloy acheived by using both in house and monitoring services. Common examples of in house monioring is via Nagios, Icinga2, Munin and Promethues. Monitoring services include Uptime.com \footnote{https://uptime.com/uptime-monitoring} for ping and HTTP monitoring, and Paessler \footnote{https://www.paessler.com/port\_monitoring}, which provides addiotnal services such as port monitoring.
+Be sure that the 
+symbols in your equation have been defined before or immediately following 
+the equation. Use ``\eqref{eq}'', not ``Eq.~\eqref{eq}'' or ``equation \eqref{eq}'', except at 
+the beginning of a sentence: ``Equation \eqref{eq} is . . .''
 
-\section{Actual AWS Expenditure}
-TODO
-\section{Future Improvements}
-\paragraph{Packaging}
-Deployment scripts were chosen for deployment and running the services. However, if the service was to be developed further we would being to use stdeb \footnote{https://pypi.org/project/stdeb/} for packaging for the Ubuntu servers, and potentially set up a Personal Package Archive \footnote{https://help.ubuntu.com/community/PPA}. This would ensure futher development and upgrades by making it part of the standard apt package management system.
-\paragraph{Service Management}
-Currently the starting and stopping of the service is done via control scripts. These would be integrated in to systemd service management \footnote{https://wiki.debian.org/systemd}.
-\paragraph{HTTP}
-The service is stateless, plublic and insecure. If a layer of security is desired to protect the data in transit, then HTTPS can be added to the Elastic Load Balancer via the AWS Certificate Manager \footnote{https://docs.aws.amazon.com/elasticloadbalancing\\/latest/classic/ssl-server-cert.html}. The simple reason for not using this was cost: we would have to pay for extra services when our budget was tight.
-\paragraph{Cloudflare Multi Region Load Balancing}
-Redeployment of the service changes the FQDN in the URL. Also, the service is currenlty deployed on only one region. The Cloudflare Load Balancing would allow the use of many regions or in fact many Cloud Providers to be used with a single contant url presented to the send consumer. The fact that the service is stateless makes it very suitable to this form of scale out \footnote{https://www.cloudflare.com/load-balancing/}
-\paragraph{Monitoring}
-Future development of the cluster would likely use additional monitoring of performance, costs and uptimes using dedicated EC2 instances, and such existing monitoring systems as Icinga2, Promethues and Munin. Uptime moniroing would of nessescity be run etxernally, such as on internal machines or another cloud providers offering. \par
-We would also start to use third party external monitoring services such as Uptime.com \footnote{https://uptime.com/uptime-monitoring} or Paessler \footnote{https://www.paessler.com/}
-\section{Team Members Contributions}
-\section{Assignment Requirements Completion}
-The requirements for this Assignment were communicated in serveral ways, including the assignment documentation, messages in the Moodle channel, the lectures, and by asking the lectuerer and asistant directly. We treated these as customer reuirements, which typically start with a good understanding of the desired outcomes and often require feedback from the customer to ensure we are achiving them.\par
-The following is what we have determine dto be the requirements, and how we have achived each one.
+\subsection{\LaTeX-Specific Advice}
+
+Please use ``soft'' (e.g., \verb|\eqref{Eq}|) cross references instead
+of ``hard'' references (e.g., \verb|(1)|). That will make it possible
+to combine sections, add equations, or change the order of figures or
+citations without having to go through the file line by line.
+
+Please don't use the \verb|{eqnarray}| equation environment. Use
+\verb|{align}| or \verb|{IEEEeqnarray}| instead. The \verb|{eqnarray}|
+environment leaves unsightly spaces around relation symbols.
+
+Please note that the \verb|{subequations}| environment in {\LaTeX}
+will increment the main equation counter even when there are no
+equation numbers displayed. If you forget that, you might write an
+article in which the equation numbers skip from (17) to (20), causing
+the copy editors to wonder if you've discovered a new method of
+counting.
+
+{\BibTeX} does not work by magic. It doesn't get the bibliographic
+data from thin air but from .bib files. If you use {\BibTeX} to produce a
+bibliography you must send the .bib files. 
+
+{\LaTeX} can't read your mind. If you assign the same label to a
+subsubsection and a table, you might find that Table I has been cross
+referenced as Table IV-B3. 
+
+{\LaTeX} does not have precognitive abilities. If you put a
+\verb|\label| command before the command that updates the counter it's
+supposed to be using, the label will pick up the last counter to be
+cross referenced instead. In particular, a \verb|\label| command
+should not go before the caption of a figure or a table.
+
+Do not use \verb|\nonumber| inside the \verb|{array}| environment. It
+will not stop equation numbers inside \verb|{array}| (there won't be
+any anyway) and it might stop a wanted equation number in the
+surrounding equation.
+
+\subsection{Some Common Mistakes}\label{SCM}
 \begin{itemize}
-  \item Use of AWS to create a non-trivial service, demonstrating our understanding of cloud technologies, their use, and their challenges.
-  \item Use of technologies such as Terraform, Ansible and Cloud Formation for programmably defined infrastructure and depoyments
-  \item Use of a open dataset from AWS
-  \item Work within a team with very diverse technical backgrounds and manage them to ensure fair distribution of the work.
+\item The word ``data'' is plural, not singular.
+\item The subscript for the permeability of vacuum $\mu_{0}$, and other common scientific constants, is zero with subscript formatting, not a lowercase letter ``o''.
+\item In American English, commas, semicolons, periods, question and exclamation marks are located within quotation marks only when a complete thought or name is cited, such as a title or full quotation. When quotation marks are used, instead of a bold or italic typeface, to highlight a word or phrase, punctuation should appear outside of the quotation marks. A parenthetical phrase or statement at the end of a sentence is punctuated outside of the closing parenthesis (like this). (A parenthetical sentence is punctuated within the parentheses.)
+\item A graph within a graph is an ``inset'', not an ``insert''. The word alternatively is preferred to the word ``alternately'' (unless you really mean something that alternates).
+\item Do not use the word ``essentially'' to mean ``approximately'' or ``effectively''.
+\item In your paper title, if the words ``that uses'' can accurately replace the word ``using'', capitalize the ``u''; if not, keep using lower-cased.
+\item Be aware of the different meanings of the homophones ``affect'' and ``effect'', ``complement'' and ``compliment'', ``discreet'' and ``discrete'', ``principal'' and ``principle''.
+\item Do not confuse ``imply'' and ``infer''.
+\item The prefix ``non'' is not a word; it should be joined to the word it modifies, usually without a hyphen.
+\item There is no period after the ``et'' in the Latin abbreviation ``et al.''.
+\item The abbreviation ``i.e.'' means ``that is'', and the abbreviation ``e.g.'' means ``for example''.
 \end{itemize}
-.
+An excellent style manual for science writers is \cite{b7}.
+
+\subsection{Authors and Affiliations}
+\textbf{The class file is designed for, but not limited to, six authors.} A 
+minimum of one author is required for all conference articles. Author names 
+should be listed starting from left to right and then moving down to the 
+next line. This is the author sequence that will be used in future citations 
+and by indexing services. Names should not be listed in columns nor group by 
+affiliation. Please keep your affiliations as succinct as possible (for 
+example, do not differentiate among departments of the same organization).
+
+\subsection{Identify the Headings}
+Headings, or heads, are organizational devices that guide the reader through 
+your paper. There are two types: component heads and text heads.
+
+Component heads identify the different components of your paper and are not 
+topically subordinate to each other. Examples include Acknowledgments and 
+References and, for these, the correct style to use is ``Heading 5''. Use 
+``figure caption'' for your Figure captions, and ``table head'' for your 
+table title. Run-in heads, such as ``Abstract'', will require you to apply a 
+style (in this case, italic) in addition to the style provided by the drop 
+down menu to differentiate the head from the text.
+
+Text heads organize the topics on a relational, hierarchical basis. For 
+example, the paper title is the primary text head because all subsequent 
+material relates and elaborates on this one topic. If there are two or more 
+sub-topics, the next level head (uppercase Roman numerals) should be used 
+and, conversely, if there are not at least two sub-topics, then no subheads 
+should be introduced.
+
+\subsection{Figures and Tables}
+\paragraph{Positioning Figures and Tables} Place figures and tables at the top and 
+bottom of columns. Avoid placing them in the middle of columns. Large 
+figures and tables may span across both columns. Figure captions should be 
+below the figures; table heads should appear above the tables. Insert 
+figures and tables after they are cited in the text. Use the abbreviation 
+``Fig.~\ref{fig}'', even at the beginning of a sentence.
+
+\begin{table}[htbp]
+\caption{Table Type Styles}
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Table}&\multicolumn{3}{|c|}{\textbf{Table Column Head}} \\
+\cline{2-4} 
+\textbf{Head} & \textbf{\textit{Table column subhead}}& \textbf{\textit{Subhead}}& \textbf{\textit{Subhead}} \\
+\hline
+copy& More table copy$^{\mathrm{a}}$& &  \\
+\hline
+\multicolumn{4}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
+\end{tabular}
+\label{tab1}
+\end{center}
+\end{table}
+
+\begin{figure}[htbp]
+\centerline{\includegraphics{fig1.png}}
+\caption{Example of a figure caption.}
+\label{fig}
+\end{figure}
+
+Figure Labels: Use 8 point Times New Roman for Figure labels. Use words 
+rather than symbols or abbreviations when writing Figure axis labels to 
+avoid confusing the reader. As an example, write the quantity 
+``Magnetization'', or ``Magnetization, M'', not just ``M''. If including 
+units in the label, present them within parentheses. Do not label axes only 
+with units. In the example, write ``Magnetization (A/m)'' or ``Magnetization 
+\{A[m(1)]\}'', not just ``A/m''. Do not label axes with a ratio of 
+quantities and units. For example, write ``Temperature (K)'', not 
+``Temperature/K''.
+
+\section*{Acknowledgment}
+
+The preferred spelling of the word ``acknowledgment'' in America is without 
+an ``e'' after the ``g''. Avoid the stilted expression ``one of us (R. B. 
+G.) thanks $\ldots$''. Instead, try ``R. B. G. thanks$\ldots$''. Put sponsor 
+acknowledgments in the unnumbered footnote on the first page.
+
+\section*{References}
+
+Please number citations consecutively within brackets \cite{b1}. The 
+sentence punctuation follows the bracket \cite{b2}. Refer simply to the reference 
+number, as in \cite{b3}---do not use ``Ref. \cite{b3}'' or ``reference \cite{b3}'' except at 
+the beginning of a sentence: ``Reference \cite{b3} was the first $\ldots$''
+
+Number footnotes separately in superscripts. Place the actual footnote at 
+the bottom of the column in which it was cited. Do not put footnotes in the 
+abstract or reference list. Use letters for table footnotes.
+
+Unless there are six authors or more give all authors' names; do not use 
+``et al.''. Papers that have not been published, even if they have been 
+submitted for publication, should be cited as ``unpublished'' \cite{b4}. Papers 
+that have been accepted for publication should be cited as ``in press'' \cite{b5}. 
+Capitalize only the first word in a paper title, except for proper nouns and 
+element symbols.
+
+For papers published in translation journals, please give the English 
+citation first, followed by the original foreign-language citation \cite{b6}.
+
+\begin{thebibliography}{00}
+\bibitem{b1} G. Eason, B. Noble, and I. N. Sneddon, ``On certain integrals of Lipschitz-Hankel type involving products of Bessel functions,'' Phil. Trans. Roy. Soc. London, vol. A247, pp. 529--551, April 1955.
+\bibitem{b2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp.68--73.
+\bibitem{b3} I. S. Jacobs and C. P. Bean, ``Fine particles, thin films and exchange anisotropy,'' in Magnetism, vol. III, G. T. Rado and H. Suhl, Eds. New York: Academic, 1963, pp. 271--350.
+\bibitem{b4} K. Elissa, ``Title of paper if known,'' unpublished.
+\bibitem{b5} R. Nicole, ``Title of paper with only first word capitalized,'' J. Name Stand. Abbrev., in press.
+\bibitem{b6} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ``Electron spectroscopy studies on magneto-optical media and plastic substrate interface,'' IEEE Transl. J. Magn. Japan, vol. 2, pp. 740--741, August 1987 [Digests 9th Annual Conf. Magnetics Japan, p. 301, 1982].
+\bibitem{b7} M. Young, The Technical Writer's Handbook. Mill Valley, CA: University Science, 1989.
+\end{thebibliography}
+\vspace{12pt}
+\color{red}
+IEEE conference templates contain guidance text for composing and formatting conference papers. Please ensure that all template text is removed from your conference paper prior to submission to the conference. Failure to remove the template text from your paper may result in your paper not being published.
+
 \end{document}

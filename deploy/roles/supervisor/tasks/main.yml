@@ -1,0 +1,6 @@
+---
+
+- include_tasks: provision1.yml
+  vars:
+    server_type: nginxservers
+    inst_count: 1
