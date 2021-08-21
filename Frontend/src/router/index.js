@@ -10,7 +10,10 @@ export default new Router({
         {
             path: '/',
             name: 'Index',
-            component: Index
+            component: Index,
+            meta: { // 加一个自定义obj
+                requireAuth: true // 这个参数 true 代表需要登录才能进入A
+            }
         },
         {
             path: '/login',

@@ -7,6 +7,16 @@ import router from './router'
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
+
+router.beforeEach((to, from, next) => {
+    if (to.meta.requireAuth) {
+        // Check login state
+        next({ path: '/login' })
+    } else {
+        next()
+    }
+})
+
 new Vue({
     el: '#app',
     router,
