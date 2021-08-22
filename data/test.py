@@ -1,19 +1,28 @@
-import libtiff
-import matplotlib.pyplot as plt
+from ukis_pysat.data import Source
+from ukis_pysat.file import get_sentinel_scene_from_dir
+from ukis_pysat.members import Datahub, Platform
+from ukis_pysat.raster import Image
 
-exit()
-tif = TIFF.open('npp_d20210630_t2355596_e0001399_b50133.vflag.co.tif',mode='r')
-img = tif.read_image()
+# connect to Copernicus Open Access Hub  and query metadata
+src = Source(Datahub.Scihub)
+meta = src.query_metadata(
+    platform=Platform.Sentinel2,
+    date=("20200101", "NOW"),
+    aoi=(11.90, 51.46, 11.94, 51.50),
+    cloud_cover=(0, 50),
+)
+for item in meta:  # item is now a PySTAC item
+    print(item.id)
+    uuid = item.properties["srcuuid"]
 
-lons = 100; lone = 137; lats = 15; late = 52
+    # download geocoded quicklook and image
+    src.download_quicklook(product_uuid=uuid, target_dir="tmp")
+    src.download_image(product_uuid=uuid, target_dir="tmp")
 
-lons_grid = int((lons+180.0)/(30.0/3600))
-lone_grid = int((lone+180.0)/(30.0/3600))
+    break
 
-lats_grid = int((75.0 - lats)/(30.0/3600))
-late_grid = int((75.0 - late)/(30.0/3600))
-
-img2 = img[late_grid:lats_grid,lons_grid:lone_grid]
-
-plt.imshow(img2)
-plt.show()
+# get sentinel scene from directory
+with get_sentinel_scene_from_dir("tmp") as (full_path, ident):
+    with Image(full_path.join("pre_nrcs.tif")) as img:
+        # scale the image array, having one band
+        img.arr = img.arr * 0.3
