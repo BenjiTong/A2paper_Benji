@@ -1,0 +1,59 @@
+{
+    "type": "Feature",
+    "stac_version": "1.0.0-beta.2",
+    "id": "SVDNB_npp_d20210617_t1922462_e1928266_b49946_c20210617232827927575_oeac_ops.rade9.co",
+    "properties": {
+        "datetime": "2021-06-17T19:22:46Z"
+    },
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [
+                    77.997916665,
+                    28.002062535000004
+                ],
+                [
+                    77.997916665,
+                    54.002083335
+                ],
+                [
+                    121.997951865,
+                    54.002083335
+                ],
+                [
+                    121.997951865,
+                    28.002062535000004
+                ],
+                [
+                    77.997916665,
+                    28.002062535000004
+                ]
+            ]
+        ]
+    },
+    "links": [
+        {
+            "rel": "root",
+            "href": "./npp_202106_catalog.json",
+            "type": "application/json"
+        },
+        {
+            "rel": "parent",
+            "href": "./npp_202106_catalog.json",
+            "type": "application/json"
+        }
+    ],
+    "assets": {
+        "image": {
+            "href": "https://globalnightlight.s3.amazonaws.com/npp_202106/SVDNB_npp_d20210617_t1922462_e1928266_b49946_c20210617232827927575_oeac_ops.rade9.co.tif",
+            "type": "image/tiff; application=geotiff; profile=cloud-optimized"
+        }
+    },
+    "bbox": [
+        77.997916665,
+        28.002062535000004,
+        121.997951865,
+        54.002083335
+    ]
+}
