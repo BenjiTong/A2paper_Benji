@@ -25,6 +25,10 @@ https://stacindex.org/ecosystem?category=API
 
 http://www.fao.org/home/en/   全球区域划分 https://data.apps.fao.org/map/catalog/srv/api/records/9c35ba10-5649-41c8-bdfc-eb78e9e65654
 
+http://www.naturalearthdata.com/downloads/10m-cultural-vectors/
+
+https://nordpil.com/resources/world-database-of-large-cities/
+
 
 git filter-branch --force --index-filter "git rm -rf --cached --ignore-unmatch data/GDNBO_npp_d20210617_t1922462_e1928266_b49946_c20210617232827917011_oeac_ops.li.co.tif" --prune-empty --tag-name-filter cat -- --all
 
@@ -33,3 +37,5 @@ git filter-branch --force --index-filter "git rm -rf --cached --ignore-unmatch d
 git filter-branch --force --index-filter "git rm -rf --cached --ignore-unmatch data/SVM15_npp_d20210610_t1446587_e1452391_b49844_c20210610185240200675_oeac_ops.rad.co.tif" --prune-empty --tag-name-filter cat -- --all
 
 git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch projects/Moon.mp3' --prune-empty --tag-name-filter cat -- --all
+
+https://gdal.org/tutorials/raster_api_tut.html

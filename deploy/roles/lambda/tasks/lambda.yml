@@ -1,0 +1,6 @@
+---
+
+- name: get all function
+  shell: "aws lambda list-functions --max-items 10"
+ 
+
