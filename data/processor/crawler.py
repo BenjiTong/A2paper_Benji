@@ -2,30 +2,19 @@ import os
 import json
 import boto3
 from urllib.request import urlopen
+from file_utils import FileUtils
 
 SQS_CLIENT = boto3.client('sqs') 
 
 global url 
 url = 'https://globalnightlight.s3.amazonaws.com/VIIRS_npp_catalog.json'
 
-ChinaArea = [108.990515,20.319485,130.478558,40.992357]
-NZArea = [163.888049,-31.69433,-171.825824,-52.621956]
-MiddleEastArea = [35.991737,39.298213,72.78633,24.828731]
-
-Wait_list = [ChinaArea, NZArea, MiddleEastArea]
+wait_area = FileUtils.WAIT_LIST
  
 global counter
 counter = 0
 
-def is_overlap(bbox1, bbox2):
-    x1 = max(bbox1[0],bbox2[0]) #108
-    y1 = max(bbox1[1],bbox2[1]) #130 
-    x2 = min(bbox1[2],bbox2[2]) #119
-    y2 = min(bbox1[3],bbox2[3]) #40
-    if x1 < x2 and y1 < y2:
-        return True
-    else:
-        return False
+
 
 def url_to_json(url: str):
     with urlopen(url) as furl:
@@ -78,12 +67,14 @@ def native_handle_sqs(event, context):
                 print('reach peak counter:' + str(counter))
                 break
             itr = url_to_json(item)
-            for idx, area in Wait_list:
-                if is_overlap(area, itr['bbox']):
+            for idx, area in wait_area:
+                if FileUtils.is_overlap(area, itr['bbox']):
                     counter += 1
                     result = {
-                        'bbox':itr['bbox'],
-                        'url':
+                        'city_id': idx,
+                        'bbox': itr['bbox'],
+                        'url': itr['assets']['image']['href'],
+                        'datetime': itr['properties']['datetime']
                     }
                     SQS_CLIENT.send_message(QueueUrl=item_topic_arn,
                                             MessageBody=json.dumps(itr))

@@ -35,6 +35,11 @@ class FileUtils:
     """
     Provides utility IO file functions.
     """
+    ChinaArea = [108.990515,20.319485,130.478558,40.992357]
+    NZArea = [163.888049,-31.69433,-171.825824,-52.621956]
+    MiddleEastArea = [35.991737,39.298213,72.78633,24.828731]
+
+    WAIT_LIST = [ChinaArea, NZArea, MiddleEastArea]
 
     def exsit_native_path(file_path):
       return os.path.exists(file_path)
@@ -65,3 +70,13 @@ class FileUtils:
             if s3_object.get('Key', '') == prefix_path: return True
             
         return False
+
+    def is_overlap(bbox1, bbox2):
+        x1 = max(bbox1[0],bbox2[0]) #108
+        y1 = max(bbox1[1],bbox2[1]) #130 
+        x2 = min(bbox1[2],bbox2[2]) #119
+        y2 = min(bbox1[3],bbox2[3]) #40
+        if x1 < x2 and y1 < y2:
+            return True
+        else:
+            return False
