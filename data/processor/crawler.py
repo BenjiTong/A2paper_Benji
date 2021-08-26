@@ -1,17 +1,22 @@
+import os
 import json
+import boto3
 from urllib.request import urlopen
+
+SQS_CLIENT = boto3.client('sqs') 
+
+global url 
+url = 'https://globalnightlight.s3.amazonaws.com/VIIRS_npp_catalog.json'
 
 ChinaArea = [108.990515,20.319485,130.478558,40.992357]
 NZArea = [163.888049,-31.69433,-171.825824,-52.621956]
 MiddleEastArea = [35.991737,39.298213,72.78633,24.828731]
 
-MAX_ITEM = 100
-MAX_LINK = 5
+Wait_list = [ChinaArea, NZArea, MiddleEastArea]
+ 
 global counter
 counter = 0
 
-# [108.990515,20.319485,            130.478558,40.992357]
-# [-5.00208333335, 61.00208322135,  119.99791766665, 75.00208333335]
 def is_overlap(bbox1, bbox2):
     x1 = max(bbox1[0],bbox2[0]) #108
     y1 = max(bbox1[1],bbox2[1]) #130 
@@ -41,34 +46,54 @@ def get_links(catalog: json, url: str):
             items.append(base_url + ((link['href']).replace('./','')))
     return children, items
 
-def deal_with_tif_info(json):
-    global counter
-    print(json['properties']['datetime'])
-    if is_overlap(ChinaArea, json['bbox']):
-        counter += 1
-        print(json['assets']['image']['href'])
-        print(json['bbox'])
-        # push tif to SNS
+ 
 
 # STAC processing...  sqs: child-link and push item into sns
-def native_handle_sqs(url = 'https://globalnightlight.s3.amazonaws.com/VIIRS_npp_catalog.json'):
+def native_handle_sqs(event, context):
     global counter
-    if counter >= MAX_ITEM:
-        print('reach peak counter:' + str(counter) +' from sns: ' + url)
-        return
-    print('from sqs: ' + url)
-    catalog = url_to_json(url)
-    child_links, items = get_links(catalog, url)
-    for index, clink in enumerate(child_links):
-        if index >= MAX_LINK:
-            break
-        print('into native handle:' + str(index) + " url:" + url)
-        native_handle_sqs(clink)  # can be pushed to SQS
-    for item in items:
-        if counter >= MAX_ITEM:
-            print('reach peak counter:' + str(counter))
-            break
-        deal_with_tif_info(url_to_json(item)) 
+    records = event['Records']
+    to_be_visited_queue = os.environ['CATALOG_CRAWL_QUEUE']
+    item_topic_arn = os.environ['STAC_ITEM_TOPIC']
+    max_link = int(os.environ['MAX_CHILDREN'])
+    max_item = int(os.environ['MAX_ITEM'])
 
-native_handle_sqs() # trigger start
+    for record in records:    
+        url = record['body']
+        if counter >= max_item:
+            print('reach peak counter:' + str(counter) +' from sns: ' + url)
+            return
+        
+        catalog = url_to_json(url)
+        child_links, items = get_links(catalog, url)
+        for index, clink in enumerate(child_links):
+            if index >= max_link:
+                break
+            SQS_CLIENT.send_message(QueueUrl=to_be_visited_queue,
+                                        MessageBody=clink)
+            print('Catalog inserted: ', clink)
+            #native_handle_sqs(clink)  # can be pushed to SQS
 
+        for item in items:
+            if counter >= max_item:
+                print('reach peak counter:' + str(counter))
+                break
+            itr = url_to_json(item)
+            for idx, area in Wait_list:
+                if is_overlap(area, itr['bbox']):
+                    counter += 1
+                    result = {
+                        'bbox':itr['bbox'],
+                        'url':
+                    }
+                    SQS_CLIENT.send_message(QueueUrl=item_topic_arn,
+                                            MessageBody=json.dumps(itr))
+                    # push tif to SNS*
+
+def sqs_handler(event, context):
+    native_handle_sqs(event, context)
+
+
+def start_handler(event, context):
+    SQS_CLIENT.send_message(QueueUrl=os.environ['CATALOG_CRAWL_QUEUE'],
+                            MessageBody=url)
+    print('Inserting root catalog', url)
