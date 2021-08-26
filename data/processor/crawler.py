@@ -67,7 +67,7 @@ def native_handle_sqs(event, context):
                 print('reach peak counter:' + str(counter))
                 break
             itr = url_to_json(item)
-            for idx, area in wait_area:
+            for idx, area in wait_area.items():
                 if FileUtils.is_overlap(area, itr['bbox']):
                     counter += 1
                     result = {

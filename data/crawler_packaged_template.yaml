@@ -5,7 +5,7 @@ Globals:
   Function:
     Runtime: python3.8
 Resources:
-  LambdaRole:
+  lmdRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -65,11 +65,11 @@ Resources:
   CrawlStartFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/683ffe65b8d1161ed6aa90d085647eb7
+      CodeUri: s3://a2-backup-sqs-sns-us/c7fe4876b1a3e393161f387d640b7bf9
       Handler: crawler.start_handler
       Role:
         Fn::GetAtt:
-        - LambdaRole
+        - lmdRole
         - Arn
       Policies: null
       Description: Starts crawling process
@@ -90,11 +90,11 @@ Resources:
   CrawlFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/683ffe65b8d1161ed6aa90d085647eb7
+      CodeUri: s3://a2-backup-sqs-sns-us/c7fe4876b1a3e393161f387d640b7bf9
       Handler: crawler.sqs_handler
       Role:
         Fn::GetAtt:
-        - LambdaRole
+        - lmdRole
         - Arn
       Policies: null
       Description: Traverse the crawl queue
@@ -105,8 +105,8 @@ Resources:
             Ref: CatalogCrawlQueue
           STAC_ITEM_TOPIC:
             Ref: ItemlQueue
-          MAX_CHILDREN: 1
-          MAX_ITEM: 5
+          MAX_CHILDREN: 10000
+          MAX_ITEM: 5000
       DeadLetterQueue:
         Type: SQS
         TargetArn:
@@ -119,11 +119,11 @@ Resources:
   ItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/683ffe65b8d1161ed6aa90d085647eb7
+      CodeUri: s3://a2-backup-sqs-sns-us/c7fe4876b1a3e393161f387d640b7bf9
       Handler: sns_processor.lambda_handler
       Role:
         Fn::GetAtt:
-        - LambdaRole
+        - lmdRole
         - Arn
       Policies: null
       Description: Traverse the crawl queue
@@ -134,8 +134,8 @@ Resources:
             Ref: CatalogCrawlQueue
           STAC_ITEM_TOPIC:
             Ref: ItemlQueue
-          MAX_CHILDREN: 1
-          MAX_ITEM: 5
+          MAX_CHILDREN: 10000
+          MAX_ITEM: 5000
       DeadLetterQueue:
         Type: SQS
         TargetArn:

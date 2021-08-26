@@ -38,8 +38,8 @@ class FileUtils:
     ChinaArea = [108.990515,20.319485,130.478558,40.992357]
     NZArea = [163.888049,-31.69433,-171.825824,-52.621956]
     MiddleEastArea = [35.991737,39.298213,72.78633,24.828731]
-
-    WAIT_LIST = [ChinaArea, NZArea, MiddleEastArea]
+    
+    WAIT_LIST = {0:ChinaArea, 1:NZArea, 2:MiddleEastArea}
 
     def exsit_native_path(file_path):
       return os.path.exists(file_path)

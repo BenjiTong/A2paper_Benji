@@ -1,3 +1,17 @@
+# deploy the data processing lambda function
+
+```shell
+
+make deploy
+
+```
+
+Pls ensure your aws have the right configure.
+
+# trigger the crawler
+
+Open the lambda page to find the start_crawler function. Following the page sending a test msg with any content. The whole processing will be started.
+
 http://blog.sciencenet.cn/blog-3247241-1249807.html
 Suomi NPP VIIRS夜间灯光遥感数据简介与下载（一）——数据介绍，FTP下载与hdf5读取
 

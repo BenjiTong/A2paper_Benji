@@ -12,7 +12,7 @@ Resources:
   # Roles start
   #################################################
 
-  LambdaRole:
+  lmdRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -88,7 +88,7 @@ Resources:
     Properties:
       CodeUri: processor
       Handler: crawler.start_handler
-      Role: !GetAtt LambdaRole.Arn
+      Role: !GetAtt lmdRole.Arn
       Policies:
       Description: Starts crawling process
       Timeout: 10
@@ -107,7 +107,7 @@ Resources:
     Properties:
       CodeUri: processor
       Handler: crawler.sqs_handler
-      Role: !GetAtt LambdaRole.Arn
+      Role: !GetAtt lmdRole.Arn
       Policies:
       Description: Traverse the crawl queue
       Timeout: 180
@@ -115,8 +115,8 @@ Resources:
         Variables:
           CATALOG_CRAWL_QUEUE: !Ref CatalogCrawlQueue
           STAC_ITEM_TOPIC: !Ref ItemlQueue
-          MAX_CHILDREN: 1
-          MAX_ITEM: 5
+          MAX_CHILDREN: 10000
+          MAX_ITEM: 5000
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt GeneralLambdaDLQ.Arn
@@ -129,7 +129,7 @@ Resources:
     Properties:
       CodeUri: processor
       Handler: sns_processor.lambda_handler
-      Role: !GetAtt LambdaRole.Arn
+      Role: !GetAtt lmdRole.Arn
       Policies:
       Description: Traverse the crawl queue
       Timeout: 180
@@ -137,16 +137,14 @@ Resources:
         Variables:
           CATALOG_CRAWL_QUEUE: !Ref CatalogCrawlQueue
           STAC_ITEM_TOPIC: !Ref ItemlQueue
-          MAX_CHILDREN: 1
-          MAX_ITEM: 5
+          MAX_CHILDREN: 10000
+          MAX_ITEM: 5000
       DeadLetterQueue:
         Type: 'SQS'
         TargetArn: !GetAtt GeneralLambdaDLQ2.Arn
       Layers:
         - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
-        - 
-          
-          arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
 
 
 
