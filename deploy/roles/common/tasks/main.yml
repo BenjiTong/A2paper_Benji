@@ -9,18 +9,22 @@
 
 # 2 * nginxservers
 
-- include_tasks: provision1.yml
+- include_tasks: provision_gateway.yml
   vars:
     server_type: nginxservers
     inst_count: 1
+    ec2_group_name: zone_a_group
+    subnet: subnet-c177d989
   when: initial
   tags:
     - nginx
 
-- include_tasks: provision2.yml
+- include_tasks: provision_gateway.yml
   vars:
     server_type: nginxservers
     inst_count: 1
+    ec2_group_name: zone_b_group
+    subnet: subnet-ba94e1e3
   when: initial
   tags:
     - nginx
@@ -33,10 +37,12 @@
 
 # 2 * tomcatservers
 
-- include_tasks: provision1.yml
+- include_tasks: provision_internal.yml
   vars:
     server_type: tomcatservers    
     inst_count: 2
+    ec2_group_name: zone_c_group
+    subnet: subnet-ba94e1e3
   when: initial
 
 

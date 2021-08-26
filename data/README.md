@@ -39,3 +39,7 @@ git filter-branch --force --index-filter "git rm -rf --cached --ignore-unmatch d
 git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch projects/Moon.mp3' --prune-empty --tag-name-filter cat -- --all
 
 https://gdal.org/tutorials/raster_api_tut.html
+
+https://stacspec.org/
+
+https://www.linkedin.com/pulse/how-sunny-my-city-better-process-stac-sentinel2-lambda-alvaro-huarte

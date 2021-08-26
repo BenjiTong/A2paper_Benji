@@ -69,6 +69,8 @@ ansible-playbook -v -i hosts site.yml
 
 ## deploy 
 
+Change both initial and terminal to false in "all".
+
 Install and configure nginx:
 
 ```shell

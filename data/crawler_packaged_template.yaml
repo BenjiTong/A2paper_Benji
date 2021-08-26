@@ -1,0 +1,147 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Static STAC Crawler
+Globals:
+  Function:
+    Runtime: python3.8
+Resources:
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+      - arn:aws:iam::aws:policy/AmazonSQSFullAccess
+      - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      - arn:aws:iam::aws:policy/AmazonSNSFullAccess
+      Path: /
+  CatalogCrawlQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+      VisibilityTimeout: 180
+  ItemlQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+      VisibilityTimeout: 1800
+  CatalogCrawTrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 10
+      EventSourceArn:
+        Fn::GetAtt:
+        - CatalogCrawlQueue
+        - Arn
+      FunctionName:
+        Ref: CrawlFunction
+  ItemTrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 2
+      EventSourceArn:
+        Fn::GetAtt:
+        - ItemlQueue
+        - Arn
+      FunctionName:
+        Ref: ItemFunction
+  GeneralLambdaDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+  GeneralLambdaDLQ2:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+  CrawlStartFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://a2-backup-sqs-sns-us/683ffe65b8d1161ed6aa90d085647eb7
+      Handler: crawler.start_handler
+      Role:
+        Fn::GetAtt:
+        - LambdaRole
+        - Arn
+      Policies: null
+      Description: Starts crawling process
+      Timeout: 10
+      Environment:
+        Variables:
+          CATALOG_CRAWL_QUEUE:
+            Ref: CatalogCrawlQueue
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn:
+          Fn::GetAtt:
+          - GeneralLambdaDLQ
+          - Arn
+      Layers:
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+  CrawlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://a2-backup-sqs-sns-us/683ffe65b8d1161ed6aa90d085647eb7
+      Handler: crawler.sqs_handler
+      Role:
+        Fn::GetAtt:
+        - LambdaRole
+        - Arn
+      Policies: null
+      Description: Traverse the crawl queue
+      Timeout: 180
+      Environment:
+        Variables:
+          CATALOG_CRAWL_QUEUE:
+            Ref: CatalogCrawlQueue
+          STAC_ITEM_TOPIC:
+            Ref: ItemlQueue
+          MAX_CHILDREN: 1
+          MAX_ITEM: 5
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn:
+          Fn::GetAtt:
+          - GeneralLambdaDLQ
+          - Arn
+      Layers:
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+  ItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://a2-backup-sqs-sns-us/683ffe65b8d1161ed6aa90d085647eb7
+      Handler: sns_processor.lambda_handler
+      Role:
+        Fn::GetAtt:
+        - LambdaRole
+        - Arn
+      Policies: null
+      Description: Traverse the crawl queue
+      Timeout: 180
+      Environment:
+        Variables:
+          CATALOG_CRAWL_QUEUE:
+            Ref: CatalogCrawlQueue
+          STAC_ITEM_TOPIC:
+            Ref: ItemlQueue
+          MAX_CHILDREN: 1
+          MAX_ITEM: 5
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn:
+          Fn::GetAtt:
+          - GeneralLambdaDLQ2
+          - Arn
+      Layers:
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1

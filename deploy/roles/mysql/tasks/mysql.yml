@@ -1,0 +1,12 @@
+---
+
+- name: aws create rds cluster
+  shell: "aws rds create-db-cluster --db-cluster-identifier A2-cluster --engine aurora-mysql \
+     --engine-version 5.7.mysql_aurora.2.07.1 --engine-mode serverless --scaling-configuration MinCapacity=4,MaxCapacity=32,SecondsUntilAutoPause=1000,AutoPause=true --master-username A2DBA --master-user-password thisisafakepw \
+     --db-subnet-group-name default-vpc-06db0e60 --vpc-security-group-ids sg-a2a22aed --enable-iam-database-authentication "
+  tags: create
+
+- name: aws create rds master database
+  shell: "aws rds create-db-instance --db-instance-identifier A2-cluster-instance \
+     --db-cluster-identifier A2-cluster --engine aurora-mysql --db-instance-class db.r4.large "
+  tags: create

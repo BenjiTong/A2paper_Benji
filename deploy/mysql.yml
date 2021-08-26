@@ -1,9 +1,8 @@
 ---
 # This playbook deploys the whole application stack in this site.
 
-- name: lambda
+- name: mysql
   hosts: local
   remote_user: root
   roles:
-    - lambda
- 
+    - mysql

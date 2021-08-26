@@ -1,4 +1,5 @@
 import json
+import os
 from os import wait
 from urllib.request import urlopen
 import boto3
@@ -15,17 +16,16 @@ bbox = [81.997916665, 13.002063335000003, 118.997946265, 38.002083335]
 
 s3 = boto3.client('s3')
 
-def print_statistics(label, array):
-    """
-    Print some statistics of the specified numpy array.
-    """
-    unique_vals = np.unique(array)
-    unique_count = [np.count_nonzero(array == v) for v in unique_vals]
-    percentages = [100.0 * (v / array.size) for v in unique_count]
-    print('INFO: {}: shape={} size={} min={} max={} unique={} count={} %={}'.format(label, array.shape, array.size, array.min(), array.max(), unique_vals, unique_count, percentages))
-
-
 def lambda_handler(event, context):
+    records = event['Records']
+    to_be_visited_queue = os.environ['CATALOG_CRAWL_QUEUE']
+    item_topic_arn = os.environ['STAC_ITEM_TOPIC']
+    max_link = int(os.environ['MAX_CHILDREN'])
+    max_item = int(os.environ['MAX_ITEM'])
+    for record in records:
+        process()
+
+def process():   
     # download file
     bucket_name, prefix_path, file_name = FileUtils.parse_s3_path(item_path)
     if FileUtils.exist_s3_path(s3, item_path) and not FileUtils.exsit_native_path(file_name):
@@ -71,7 +71,5 @@ def lambda_handler(event, context):
     sum_of_value_pixels = np.sum(s3_raster)
 
     avg_radiance = sum_of_value_pixels / count_of_value_pixels
-    print_statistics('s3_raster', s3_raster)
     print('avg_radience:' + str(avg_radiance))
 
-lambda_handler(None,None)    
