@@ -15,7 +15,8 @@
                                 >
                                     <input
                                         class="btn btn--primary type--uppercase"
-                                        @click="submit"
+                                        type="button"
+                                        @click="submit(way.id)"
                                         v-bind:value="way.label"
                                     />
                                 </li>
@@ -37,16 +38,53 @@ export default {
         return {
             signInWays: [
                 { id: 0, label: 'Github' }
+            ],
+            wayDetails: [
+                {
+                    client_id: '42a45d2fefb71837398e',
+                    scope: 'read:user',
+                    state: 'A2Inc', // An unguessable random string. It is used to protect against cross-site request forgery attacks.
+                    getCodeURL: 'https://github.com/login/oauth/authorize',
+                    redirectURL: 'http://localhost:8888/#/oauth/redirect'
+                }
             ]
         }
     },
     methods: {
-        submit: function () {
-            // Http request here
+        submit: function (index) {
+            // check if log in
 
+            // if not
+            if (index === 0) {
+                // console.info(this.formatGitHubCodeURL)
+                window.open(this.formatGitHubCodeURL)
+            }
+            /*
+            this.$http.jsonp(
+                'github/login/oauth/authorize',
+                {
+                    'params': this.wayDetails[index]
+                })
+                .then((response) => {
+                    console.info(response.body)
+                }, (response) => {
+                    console.error(response)
+                })
+*/
             // Temp create fake token
-            sessionStorage.setItem('token', '123')
-            this.$router.push({ name: 'Index' })
+            // sessionStorage.setItem('token', '123')
+            // this.$router.push({ name: 'Index' })
+        }
+    },
+    computed: {
+        formatGitHubCodeURL: function () {
+            let detail = this.wayDetails[0]
+            return detail.getCodeURL + ('?' + this.$querystring.stringify({
+                client_id: detail.client_id,
+                scope: detail.scope,
+                state: detail.state,
+                redirect_uri: detail.redirectURL
+            }))
         }
     },
     components: {
