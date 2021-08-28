@@ -1,10 +1,7 @@
 ---
 
-- include_tasks: mysql.yml
-  tags: create
-
-
-- include_tasks: delete.yml
-  tags: delete
+- name: pls run 'make deploy' in roles/mysql/templates/
+  debug:
+   msg: pls run 'make deploy' in roles/mysql/templates/
 
   

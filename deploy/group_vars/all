@@ -27,14 +27,14 @@ webservers:
 
 tomcatservers:
 #tomcatservers
-    - 172.31.5.52
-    - 172.31.9.76
-   
+    - 172.31.31.152
+    - 172.31.18.87
+
 
 nginxservers:
 #nginxservers
-    - 172.31.10.148
-    - 172.31.35.157
+    - 172.31.10.177
+    - 172.31.44.51
   
 
 dbservers:

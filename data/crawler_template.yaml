@@ -4,7 +4,7 @@ Description: 'Static STAC Crawler'
 
 Globals:
   Function:
-    Runtime: python3.8
+    Runtime: python3.7
 
 Resources:
 
@@ -121,8 +121,8 @@ Resources:
         Type: 'SQS'
         TargetArn: !GetAtt GeneralLambdaDLQ.Arn
       Layers:
-        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
-        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
 
   ItemFunction:
     Type: 'AWS::Serverless::Function'
@@ -143,8 +143,8 @@ Resources:
         Type: 'SQS'
         TargetArn: !GetAtt GeneralLambdaDLQ2.Arn
       Layers:
-        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
-        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
 
 
 

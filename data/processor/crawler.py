@@ -73,11 +73,11 @@ def native_handle_sqs(event, context):
                     result = {
                         'city_id': idx,
                         'bbox': itr['bbox'],
-                        'url': itr['assets']['image']['href'],
+                        'url': itr['assets']['image']['href'].replace('https://globalnightlight.s3.amazonaws.com','s://globalnightlight'),
                         'datetime': itr['properties']['datetime']
                     }
                     SQS_CLIENT.send_message(QueueUrl=item_topic_arn,
-                                            MessageBody=json.dumps(itr))
+                                            MessageBody=json.dumps(result))
                     # push tif to SNS*
 
 def sqs_handler(event, context):

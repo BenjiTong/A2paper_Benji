@@ -42,7 +42,7 @@
     server_type: tomcatservers    
     inst_count: 2
     ec2_group_name: zone_c_group
-    subnet: subnet-ba94e1e3
+    subnet: subnet-17209e71
   when: initial
 
 

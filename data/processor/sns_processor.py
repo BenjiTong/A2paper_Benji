@@ -7,6 +7,8 @@ import numpy as np
 from osgeo import gdal
 from file_utils import FileUtils
 from osgeo_utils import OgrCommonUtils, GdalCommonUtils
+from sm_mysql import Sec_Mysql
+import datetime 
 
 wait_area = FileUtils.WAIT_LIST
 
@@ -19,13 +21,16 @@ def lambda_handler(event, context):
     max_link = int(os.environ['MAX_CHILDREN'])
     max_item = int(os.environ['MAX_ITEM'])
     for record in records:
-        r = json.loads(record)
+        r = json.loads(record['body'])
         process(r['url'], r['bbox'], r['datetime'], r['city_id'])
 
-def process(item_path, bbox, datetime, city_id):   
+def process(item_path, bbox, date_time, city_id):   
     area = wait_area[city_id]
     # download file
     bucket_name, prefix_path, file_name = FileUtils.parse_s3_path(item_path)
+    
+    file_name = '/tmp/{}'.format(file_name)
+
     if FileUtils.exist_s3_path(s3, item_path) and not FileUtils.exsit_native_path(file_name):
         print(bucket_name+": " + prefix_path + ": "+ file_name)
         s3.download_file(bucket_name, prefix_path, file_name)
@@ -68,9 +73,24 @@ def process(item_path, bbox, datetime, city_id):
     count_of_value_pixels = np.count_nonzero(s3_raster > 0.3)
     sum_of_value_pixels = np.sum(s3_raster)
 
-    avg_radiance = sum_of_value_pixels / count_of_value_pixels
-    print('avg_radience:' + str(avg_radiance))
+    print('insert into mysql: {} {} {} {} {}'.format(date_time, sum_of_value_pixels, count_of_value_pixels, city_id, bbox))
+    # insert into mysql: 
+    # 2012-11-01T18:48:57Z 16145224.0 3971878 0 [83.997916665, 7.0020633350000026, 118.997944665, 32.002083335]
 
-    print('insert into mysql: {} {} {} {} {}'.format(datetime, sum_of_value_pixels, count_of_value_pixels, city_id, bbox))
-    # insert into mysql
 
+    del s3_raster
+    FileUtils.delete_native_name(file_name)
+
+    time = datetime.datetime.strptime(date_time,"%Y-%m-%dT%H:%M:%SZ") 
+    ts = datetime.datetime.timestamp(time) 
+    conn = Sec_Mysql.get_mysql_conn()
+
+    sql = ("INSERT INTO main(datetime, radiance, pixels, city_id, window,file) VALUES (%s, %s, %s, %s, %s, %s)")
+    data = (ts, sum_of_value_pixels, count_of_value_pixels, city_id, bbox, file_name)
+
+    try:
+        cur = conn.cursor()
+        id = cur.execute(sql,data)
+        print('{} insert success!'.format(id))
+    except Exception as e:
+        print("Database connection failed due to {}".format(e))  

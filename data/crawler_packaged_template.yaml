@@ -3,7 +3,7 @@ Transform: AWS::Serverless-2016-10-31
 Description: Static STAC Crawler
 Globals:
   Function:
-    Runtime: python3.8
+    Runtime: python3.7
 Resources:
   lmdRole:
     Type: AWS::IAM::Role
@@ -65,7 +65,7 @@ Resources:
   CrawlStartFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/c7fe4876b1a3e393161f387d640b7bf9
+      CodeUri: s3://a2-backup-sqs-sns-us/b578b208b339f846fd3a1bd3db842c8a
       Handler: crawler.start_handler
       Role:
         Fn::GetAtt:
@@ -90,7 +90,7 @@ Resources:
   CrawlFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/c7fe4876b1a3e393161f387d640b7bf9
+      CodeUri: s3://a2-backup-sqs-sns-us/b578b208b339f846fd3a1bd3db842c8a
       Handler: crawler.sqs_handler
       Role:
         Fn::GetAtt:
@@ -114,12 +114,12 @@ Resources:
           - GeneralLambdaDLQ
           - Arn
       Layers:
-      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
-      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
   ItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/c7fe4876b1a3e393161f387d640b7bf9
+      CodeUri: s3://a2-backup-sqs-sns-us/b578b208b339f846fd3a1bd3db842c8a
       Handler: sns_processor.lambda_handler
       Role:
         Fn::GetAtt:
@@ -143,5 +143,5 @@ Resources:
           - GeneralLambdaDLQ2
           - Arn
       Layers:
-      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
-      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3

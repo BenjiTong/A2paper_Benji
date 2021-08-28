@@ -1,10 +1,12 @@
-CREATE TABLE `A2_main` (
-	`id` INT(10) NOT NULL AUTO_INCREMENT,
-	`datetime` DATE NOT NULL DEFAULT '',
-	`radiance` INT(10) NOT NULL DEFAULT '0',
-	`pixels` INT(10) NOT NULL DEFAULT '0',
-	`city_id` INT NOT NULL DEFAULT '0',
-	`window` VARCHAR(200) NOT NULL DEFAULT '',
-	KEY `city_id` (`city_id`) USING BTREE,
+CREATE TABLE `main` (
+	`id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+	`datetime` timestamp DEFAULT CURRENT_TIMESTAMP,
+	`radiance` INT(10) unsigned DEFAULT '0',
+	`pixels` INT(10) unsigned DEFAULT '10',
+	`city_id` TINYINT(4) unsigned DEFAULT '0',
+	`window` VARCHAR(150) DEFAULT '',
+	`file` VARCHAR(250) DEFAULT '',
+	UNIQUE KEY `file` (`file`) USING BTREE,
+	KEY `city_by_time` (`datetime`,`city_id`) USING BTREE,
 	PRIMARY KEY (`id`)
 );
