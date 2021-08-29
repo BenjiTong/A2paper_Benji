@@ -175,3 +175,7 @@ data/downloading/*
 data/processor/SVDNB_npp_d20120401_t1901195_e1906599_b02219_c20120402010701174040_noaa_ops.rade9.co.tif
 downloading/*
 data/crawler_packaged_template.yaml
+crawler_packaged_template.yaml
+deploy/roles/mysql/templates/dbsm_packaged_template.yaml
+deploy/roles/mysql/templates/dbsm_packaged_template_master.yaml
+

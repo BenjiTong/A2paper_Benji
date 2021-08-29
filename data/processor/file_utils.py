@@ -46,6 +46,7 @@ class FileUtils:
 
     def delete_native_file(file_name):
       os.remove(file_name)
+      
     @staticmethod
     def parse_s3_path(s3_path):
         """

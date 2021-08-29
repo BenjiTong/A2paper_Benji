@@ -30,7 +30,35 @@ Resources:
         - "arn:aws:iam::aws:policy/AmazonSQSFullAccess"
         - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
         - "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
       Path: "/"
+   
+  RolePolicies: 
+    Type: "AWS::IAM::Policy"
+    Properties: 
+      PolicyName: "root"
+      PolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: "Allow"
+            Action: "secretsmanager:GetSecretValue"
+            Resource: "arn:aws:secretsmanager:*:154096909498:secret:*"
+          - Effect: "Allow"
+            Action: 
+              - ec2:AttachNetworkInterface
+              - ec2:CreateNetworkInterface
+              - ec2:CreateNetworkInterfacePermission
+              - ec2:DeleteNetworkInterface
+              - ec2:DeleteNetworkInterfacePermission
+              - ec2:DescribeDhcpOptions
+              - ec2:DescribeNetworkInterfaces
+              - ec2:DescribeNetworkInterfacePermissions
+              - ec2:DescribeSubnets
+              - ec2:DescribeVpcs
+              - ec2:DescribeInstances
+            Resource: "*"
+      Roles: 
+        - Ref: "lmdRole"
 
   #################################################
   # Roles end
@@ -101,6 +129,13 @@ Resources:
       Layers:
         - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
         - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+        - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1
+      # VpcConfig:
+      #   SecurityGroupIds:
+      #     - sg-0984573a1a37c1d1a
+      #   SubnetIds:
+      #     - subnet-03f58fc5f9501f18a
+      #     - subnet-0a54c95baf6c74af9
 
   CrawlFunction:
     Type: 'AWS::Serverless::Function'
@@ -123,6 +158,13 @@ Resources:
       Layers:
         - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
         - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
+        - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1
+      # VpcConfig:
+      #   SecurityGroupIds:
+      #     - sg-0984573a1a37c1d1a
+      #   SubnetIds:
+      #     - subnet-03f58fc5f9501f18a
+      #     - subnet-0a54c95baf6c74af9
 
   ItemFunction:
     Type: 'AWS::Serverless::Function'
@@ -145,9 +187,24 @@ Resources:
       Layers:
         - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
         - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
-
-
+        - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1
+      # VpcConfig:
+      #   SecurityGroupIds:
+      #     - sg-0984573a1a37c1d1a
+      #   SubnetIds:
+      #     - subnet-03f58fc5f9501f18a
+      #     - subnet-0a54c95baf6c74af9
 
   #################################################
   # Lambda end
   #################################################
+
+  # SQSEndpoint:
+  #   Type: 'AWS::EC2::VPCEndpoint'
+  #   Properties:
+  #     VpcEndpointType: Interface
+  #     SubnetIds:
+  #       - subnet-03f58fc5f9501f18a
+  #       - subnet-0a54c95baf6c74af9
+  #     ServiceName: !Sub 'com.amazonaws.${AWS::Region}.lambda'
+  #     VpcId: vpc-0316b5b071295829b

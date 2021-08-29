@@ -92,19 +92,19 @@ Resources:
       Engine: mysql
       # DBSubnetGroupName:
       #   Ref: MyDBSubnetGroup
-      # MasterUsername:
-      #   Fn::Sub: "{{resolve:secretsmanager:${MyRDSInstanceRotationSecret}::username}}"
-      # MasterUserPassword:
-      #   Fn::Sub: "{{resolve:secretsmanager:${MyRDSInstanceRotationSecret}::password}}"
+      MasterUsername:
+        Fn::Sub: "{{resolve:secretsmanager:${MyRDSInstanceRotationSecret}::username}}"
+      MasterUserPassword:
+        Fn::Sub: "{{resolve:secretsmanager:${MyRDSInstanceRotationSecret}::password}}"
       BackupRetentionPeriod: 1
       VPCSecurityGroups: 
       # ap-southeast-1
-        - sg-0972b7aabb5370b44         
-      SourceRegion: us-east-1
-      SourceDBInstanceIdentifier: arn:aws:rds:us-east-1:154096909498:db:a2onlinemaindb
+        # - sg-0972b7aabb5370b44         
+      # SourceRegion: us-east-1
+      # SourceDBInstanceIdentifier: arn:aws:rds:us-east-1:154096909498:db:a2onlinemaindb
 
       # us-east-1
-        # - sg-0984573a1a37c1d1a
+        - sg-0984573a1a37c1d1a
 
         
   #Database subnet group for the RDS instance 

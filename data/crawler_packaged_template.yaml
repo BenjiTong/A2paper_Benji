@@ -23,7 +23,34 @@ Resources:
       - arn:aws:iam::aws:policy/AmazonSQSFullAccess
       - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
       - arn:aws:iam::aws:policy/AmazonSNSFullAccess
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
       Path: /
+  RolePolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: root
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action: secretsmanager:GetSecretValue
+          Resource: arn:aws:secretsmanager:*:154096909498:secret:*
+        - Effect: Allow
+          Action:
+          - ec2:AttachNetworkInterface
+          - ec2:CreateNetworkInterface
+          - ec2:CreateNetworkInterfacePermission
+          - ec2:DeleteNetworkInterface
+          - ec2:DeleteNetworkInterfacePermission
+          - ec2:DescribeDhcpOptions
+          - ec2:DescribeNetworkInterfaces
+          - ec2:DescribeNetworkInterfacePermissions
+          - ec2:DescribeSubnets
+          - ec2:DescribeVpcs
+          - ec2:DescribeInstances
+          Resource: '*'
+      Roles:
+      - Ref: lmdRole
   CatalogCrawlQueue:
     Type: AWS::SQS::Queue
     Properties:
@@ -65,7 +92,7 @@ Resources:
   CrawlStartFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/b578b208b339f846fd3a1bd3db842c8a
+      CodeUri: s3://a2-backup-sqs-sns-us/c80010a8642b0384fbd09a6e01205d23
       Handler: crawler.start_handler
       Role:
         Fn::GetAtt:
@@ -87,10 +114,11 @@ Resources:
       Layers:
       - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
       - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+      - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1
   CrawlFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/b578b208b339f846fd3a1bd3db842c8a
+      CodeUri: s3://a2-backup-sqs-sns-us/c80010a8642b0384fbd09a6e01205d23
       Handler: crawler.sqs_handler
       Role:
         Fn::GetAtt:
@@ -116,10 +144,11 @@ Resources:
       Layers:
       - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
       - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
+      - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1
   ItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/b578b208b339f846fd3a1bd3db842c8a
+      CodeUri: s3://a2-backup-sqs-sns-us/c80010a8642b0384fbd09a6e01205d23
       Handler: sns_processor.lambda_handler
       Role:
         Fn::GetAtt:
@@ -145,3 +174,4 @@ Resources:
       Layers:
       - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
       - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
+      - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1

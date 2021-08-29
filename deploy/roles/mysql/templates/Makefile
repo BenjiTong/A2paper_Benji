@@ -9,15 +9,31 @@ DEPLOY_BUCKET = a2-backup-sqs-sns
 APP = dbsm
 STACK_NAME = dbsm
 
-# Derived
-SAM_TEMPLATE = $(APP)_template.yaml
-SAM_PACKAGED = $(APP)_packaged_template.yaml
+# Derived slave
+SLAVE_TEMPLATE = $(APP)_template.yaml
+SLAVE_PACKAGED = $(APP)_packaged_template.yaml
 
 validate:
-	aws cloudformation validate-template --template-body file://$(SAM_TEMPLATE)
+	aws cloudformation validate-template --template-body file://$(SLAVE_TEMPLATE)
 
 package:
-	aws cloudformation package --template-file $(SAM_TEMPLATE) --s3-bucket $(DEPLOY_BUCKET) --output-template $(SAM_PACKAGED) 
+	aws cloudformation package --template-file $(SLAVE_TEMPLATE) --s3-bucket $(DEPLOY_BUCKET) --output-template $(SLAVE_PACKAGED) 
 
 deploy: validate package
-	aws cloudformation deploy --template-file $(SAM_PACKAGED) --stack-name $(STACK_NAME) --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM
+	aws cloudformation deploy --template-file $(SLAVE_PACKAGED) --stack-name $(STACK_NAME) --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM
+
+
+
+# Derived master
+MASTER_TEMPLATE = $(APP)_template_master.yaml
+MASTER_PACKAGED = $(APP)_packaged_template_master.yaml
+
+vmaster:
+	aws cloudformation validate-template --template-body file://$(MASTER_TEMPLATE)
+
+pmaster:
+	aws cloudformation package --template-file $(MASTER_TEMPLATE) --s3-bucket $(DEPLOY_BUCKET) --output-template $(MASTER_PACKAGED) 
+
+master: vmaster pmaster
+	aws cloudformation deploy --template-file $(MASTER_PACKAGED) --stack-name $(STACK_NAME) --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM
+

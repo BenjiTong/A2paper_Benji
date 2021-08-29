@@ -79,18 +79,19 @@ def process(item_path, bbox, date_time, city_id):
 
 
     del s3_raster
-    FileUtils.delete_native_name(file_name)
+    FileUtils.delete_native_file(file_name)
 
     time = datetime.datetime.strptime(date_time,"%Y-%m-%dT%H:%M:%SZ") 
     ts = datetime.datetime.timestamp(time) 
     conn = Sec_Mysql.get_mysql_conn()
 
-    sql = ("INSERT INTO main(datetime, radiance, pixels, city_id, window,file) VALUES (%s, %s, %s, %s, %s, %s)")
-    data = (ts, sum_of_value_pixels, count_of_value_pixels, city_id, bbox, file_name)
+    sql = ("INSERT INTO main(`datetime`, `radiance`, `pixels`, `city_id`, `window`, `file`) VALUES (%s, %s, %s, %s, %s, %s)")
+    data = (ts, str(sum_of_value_pixels), count_of_value_pixels, city_id, str(bbox), file_name)
 
     try:
         cur = conn.cursor()
-        id = cur.execute(sql,data)
-        print('{} insert success!'.format(id))
+        cur.execute(sql,data)
+        conn.commit()
+        print('{} insert success!'.format(file_name))
     except Exception as e:
-        print("Database connection failed due to {}".format(e))  
+        print("Database connection failed or excute error due to {}".format(e))  

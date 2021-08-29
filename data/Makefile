@@ -10,14 +10,14 @@ APP = crawler
 STACK_NAME = crawler
 
 # Derived
-SAM_TEMPLATE = $(APP)_template.yaml
-SAM_PACKAGED = $(APP)_packaged_template.yaml
+TEMPLATE = $(APP)_template.yaml
+PACKAGED = $(APP)_packaged_template.yaml
 
 validate:
-	aws cloudformation validate-template --template-body file://$(SAM_TEMPLATE)
+	aws cloudformation validate-template --template-body file://$(TEMPLATE)
 
 package:
-	aws cloudformation package --template-file $(SAM_TEMPLATE) --s3-bucket $(DEPLOY_BUCKET) --output-template $(SAM_PACKAGED) 
+	aws cloudformation package --template-file $(TEMPLATE) --s3-bucket $(DEPLOY_BUCKET) --output-template $(PACKAGED) 
 
 deploy: validate package
-	aws cloudformation deploy --template-file $(SAM_PACKAGED) --stack-name $(STACK_NAME) --capabilities CAPABILITY_IAM
+	aws cloudformation deploy --template-file $(PACKAGED) --stack-name $(STACK_NAME) --capabilities CAPABILITY_IAM

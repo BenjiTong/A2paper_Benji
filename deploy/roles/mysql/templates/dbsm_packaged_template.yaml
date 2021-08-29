@@ -20,13 +20,11 @@ Resources:
       AllocatedStorage: 20
       DBInstanceClass: db.t2.micro
       Engine: mysql
-      MasterUsername:
-        Fn::Sub: '{{resolve:secretsmanager:${MyRDSInstanceRotationSecret}::username}}'
-      MasterUserPassword:
-        Fn::Sub: '{{resolve:secretsmanager:${MyRDSInstanceRotationSecret}::password}}'
-      BackupRetentionPeriod: 0
+      BackupRetentionPeriod: 1
       VPCSecurityGroups:
       - sg-0972b7aabb5370b44
+      SourceRegion: us-east-1
+      SourceDBInstanceIdentifier: arn:aws:rds:us-east-1:154096909498:db:a2onlinemaindb
   SecretRDSInstanceAttachment:
     Type: AWS::SecretsManager::SecretTargetAttachment
     Properties:
