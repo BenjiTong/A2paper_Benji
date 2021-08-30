@@ -1,6 +1,57 @@
 # A2
 A2 main project
 
+## Quick start
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Directories introduction
 
 deploy/  all the ansible project

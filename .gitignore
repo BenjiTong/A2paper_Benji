@@ -179,3 +179,4 @@ crawler_packaged_template.yaml
 deploy/roles/mysql/templates/dbsm_packaged_template.yaml
 deploy/roles/mysql/templates/dbsm_packaged_template_master.yaml
 
+data/processor/.DS_Store

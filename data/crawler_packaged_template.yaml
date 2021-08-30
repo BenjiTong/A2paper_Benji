@@ -74,7 +74,7 @@ Resources:
   ItemTrigger:
     Type: AWS::Lambda::EventSourceMapping
     Properties:
-      BatchSize: 2
+      BatchSize: 1
       EventSourceArn:
         Fn::GetAtt:
         - ItemlQueue
@@ -92,7 +92,7 @@ Resources:
   CrawlStartFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/c80010a8642b0384fbd09a6e01205d23
+      CodeUri: s3://a2-backup-sqs-sns-us/bbfa3e9c40785e432a23badb031a49bb
       Handler: crawler.start_handler
       Role:
         Fn::GetAtt:
@@ -118,7 +118,7 @@ Resources:
   CrawlFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/c80010a8642b0384fbd09a6e01205d23
+      CodeUri: s3://a2-backup-sqs-sns-us/bbfa3e9c40785e432a23badb031a49bb
       Handler: crawler.sqs_handler
       Role:
         Fn::GetAtt:
@@ -148,7 +148,7 @@ Resources:
   ItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/c80010a8642b0384fbd09a6e01205d23
+      CodeUri: s3://a2-backup-sqs-sns-us/bbfa3e9c40785e432a23badb031a49bb
       Handler: sns_processor.lambda_handler
       Role:
         Fn::GetAtt:
@@ -157,6 +157,8 @@ Resources:
       Policies: null
       Description: Traverse the crawl queue
       Timeout: 180
+      ReservedConcurrentExecutions: 10
+      MemorySize: 1024
       Environment:
         Variables:
           CATALOG_CRAWL_QUEUE:

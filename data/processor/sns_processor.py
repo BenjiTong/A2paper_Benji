@@ -26,14 +26,17 @@ def lambda_handler(event, context):
 
 def process(item_path, bbox, date_time, city_id):   
     area = wait_area[city_id]
-    # download file
-    bucket_name, prefix_path, file_name = FileUtils.parse_s3_path(item_path)
+    # # download file
+    # bucket_name, prefix_path, file_name = FileUtils.parse_s3_path(item_path)
     
-    file_name = '/tmp/{}'.format(file_name)
+    # file_name = '/tmp/{}'.format(file_name)
 
-    if FileUtils.exist_s3_path(s3, item_path) and not FileUtils.exsit_native_path(file_name):
-        print(bucket_name+": " + prefix_path + ": "+ file_name)
-        s3.download_file(bucket_name, prefix_path, file_name)
+    file_name = '/vsicurl/{}'.format(item_path)
+    #.replace('s3://','/vsis3/')
+
+    # if FileUtils.exist_s3_path(s3, item_path) and not FileUtils.exsit_native_path(file_name):
+    #     print(bucket_name+": " + prefix_path + ": "+ file_name)
+    #     s3.download_file(bucket_name, prefix_path, file_name)
     # calculate intersects
     wait_geometry = OgrCommonUtils.create_geometry_from_bbox(area[0],area[1],area[2],area[3])
     s3_dataset = gdal.Open(file_name, gdal.GA_ReadOnly)
@@ -73,21 +76,17 @@ def process(item_path, bbox, date_time, city_id):
     count_of_value_pixels = np.count_nonzero(s3_raster > 0.3)
     sum_of_value_pixels = np.sum(s3_raster)
 
-    print('insert into mysql: {} {} {} {} {}'.format(date_time, sum_of_value_pixels, count_of_value_pixels, city_id, bbox))
-    # insert into mysql: 
-    # 2012-11-01T18:48:57Z 16145224.0 3971878 0 [83.997916665, 7.0020633350000026, 118.997944665, 32.002083335]
-
+    if count_of_value_pixels == 0:
+        return 'filter zero area: {}'.format(file_name)
 
     del s3_raster
-    FileUtils.delete_native_file(file_name)
+    # FileUtils.delete_native_file(file_name)
 
-    time = datetime.datetime.strptime(date_time,"%Y-%m-%dT%H:%M:%SZ") 
-    ts = datetime.datetime.timestamp(time) 
     conn = Sec_Mysql.get_mysql_conn()
 
     sql = ("INSERT INTO main(`datetime`, `radiance`, `pixels`, `city_id`, `window`, `file`) VALUES (%s, %s, %s, %s, %s, %s)")
-    data = (ts, str(sum_of_value_pixels), count_of_value_pixels, city_id, str(bbox), file_name)
-
+    data = (date_time, str(sum_of_value_pixels), count_of_value_pixels, city_id, str(bbox), file_name)
+    print("INSERT INTO main(`datetime`, `radiance`, `pixels`, `city_id`, `window`, `file`) VALUES ({}, {}, {}, {}, {}, {})".format(date_time, str(sum_of_value_pixels), count_of_value_pixels, city_id, str(bbox), file_name))
     try:
         cur = conn.cursor()
         cur.execute(sql,data)
@@ -95,3 +94,15 @@ def process(item_path, bbox, date_time, city_id):
         print('{} insert success!'.format(file_name))
     except Exception as e:
         print("Database connection failed or excute error due to {}".format(e))  
+
+    return 'process over:{}'.format(file_name)
+
+# process('https://globalnightlight.s3.amazonaws.com/201305/SVDNB_npp_d20130501_t1856278_e1902082_b07823_c20130502010209874894_noaa_ops.rade9.co.tif',
+# [
+#         124.997916665,
+#         36.002061735,
+#         177.997959065,
+#         63.002083335
+#     ],"2012-05-01T16:09:06Z",0
+# )
+

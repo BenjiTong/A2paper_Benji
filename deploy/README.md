@@ -39,7 +39,7 @@ Deploy:
 update group_vars/all:
   initial: false
 
-ansible-playbook -v -i hosts
+ansible-playbook -v -i hosts site.yml
 
 ```
 

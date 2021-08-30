@@ -1,7 +1,7 @@
 initial: 
     false
 terminate: 
-    false
+    true
 
 debug: true
 

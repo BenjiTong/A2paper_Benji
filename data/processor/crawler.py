@@ -73,7 +73,8 @@ def native_handle_sqs(event, context):
                     result = {
                         'city_id': idx,
                         'bbox': itr['bbox'],
-                        'url': itr['assets']['image']['href'].replace('https://globalnightlight.s3.amazonaws.com','s://globalnightlight'),
+                        'url': itr['assets']['image']['href'],
+                        # .replace('https://globalnightlight.s3.amazonaws.com','s://globalnightlight'),
                         'datetime': itr['properties']['datetime']
                     }
                     SQS_CLIENT.send_message(QueueUrl=item_topic_arn,

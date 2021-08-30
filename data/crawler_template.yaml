@@ -90,7 +90,7 @@ Resources:
   ItemTrigger:
     Type: AWS::Lambda::EventSourceMapping
     Properties:
-      BatchSize: 2
+      BatchSize: 1
       EventSourceArn: !GetAtt [ItemlQueue, Arn]
       FunctionName: !Ref ItemFunction
 
@@ -175,6 +175,8 @@ Resources:
       Policies:
       Description: Traverse the crawl queue
       Timeout: 180
+      ReservedConcurrentExecutions: 10
+      MemorySize: 1024
       Environment:
         Variables:
           CATALOG_CRAWL_QUEUE: !Ref CatalogCrawlQueue
