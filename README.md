@@ -52,6 +52,7 @@ A2 main project
 
 
 
+
 ## Directories introduction
 
 deploy/  all the ansible project
