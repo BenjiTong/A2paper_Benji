@@ -7,14 +7,11 @@ localhost ansible_connection=local ansible_python_interpreter=/Users/chenzhen/Do
 
 [tomcatservers]
 #tomcatservers
-54.169.155.253 ansible_ssh_private_key_file=~/.ssh/cz_sg-ec2-key.pem ansible_user=ubuntu
-13.229.65.17 ansible_ssh_private_key_file=~/.ssh/cz_sg-ec2-key.pem ansible_user=ubuntu
 
 
 [nginxservers]
 #nginxservers
-13.212.30.64 ansible_ssh_private_key_file=~/.ssh/cz_sg-ec2-key.pem ansible_user=ubuntu
-13.229.182.94 ansible_ssh_private_key_file=~/.ssh/cz_sg-ec2-key.pem ansible_user=ubuntu
+
 
 
 [dbservers]
