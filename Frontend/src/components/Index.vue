@@ -1,130 +1,204 @@
 <template>
-    <div>
-        <svg width="600" height="500"></svg>
+    <div data-smooth-scroll-offset="77">
+        <div class="nav-container">
+            <div>
+                <nav class="bar bar-toggle">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <div class="bar__module">
+                                    <router-link :to="{ name: 'Index' }">
+                                        <img
+                                            class="logo logo-dark"
+                                            alt="logo"
+                                            src="img/logo-dark.png"
+                                        />
+                                        <img
+                                            class="logo logo-light"
+                                            alt="logo"
+                                            src="img/logo-light.png"
+                                        />
+                                    </router-link>
+                                </div>
+                            </div>
+                            <div class="col-6 d-flex justify-content-end">
+                                <div class="bar__module">
+                                    <div
+                                        class="menu-toggle pull-right"
+                                        @click="showSideMenu(true)"
+                                    >
+                                        <i
+                                            class="stack-interface stack-menu"
+                                        ></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <div
+                    class="mask"
+                    v-show="isSideMenuShowing"
+                    @click.self.stop="showSideMenu(false)"
+                ></div>
+                <transition name="from-right">
+                    <div
+                        class="
+                            notification
+                            pos-right pos-top
+                            side-menu
+                            bg--white
+                        "
+                        v-if="isSideMenuShowing"
+                        v-on:click.stop="clickWrapper($event)"
+                    >
+                        <div
+                            class="
+                                side-menu__module
+                                pos-vertical-center
+                                text-right
+                            "
+                        >
+                            <ul class="menu-vertical">
+                                <li class="h4">{{ username }}</li>
+                                <li>
+                                    <input
+                                        type="button"
+                                        class="btn"
+                                        @click="signout"
+                                        value="Signout"
+                                    />
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </transition>
+            </div>
+        </div>
+        <div class="main-container">
+            <section>
+                <div class="container">
+                    <div class="masonry">
+                        <div
+                            class="
+                                masonry-filter-container
+                                text-center
+                                row
+                                justify-content-center
+                                align-items-center
+                            "
+                        >
+                            <span>City: </span>
+                            <div class="masonry-filter-holder">
+                                <div
+                                    class="masonry__filters"
+                                    data-filter-all-text="All Categories"
+                                >
+                                    <ul>
+                                        <li
+                                            class="active"
+                                            data-masonry-filter="*"
+                                        >
+                                            All Categories
+                                        </li>
+                                        <li data-masonry-filter="filter-1">
+                                            Filter 1
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!--
+                        <div class="masonry__container row masonry--active">
+                            <div
+                                class="
+                                    masonry__item
+                                    col-md-6 col-12
+                                    filter-filter-1
+                                "
+                                data-masonry-filter="Filter 1"
+                            >
+                                <div class="video-cover border--round">
+                                    <div class="background-image-holder">
+                                        <img alt="image" src="img/blog-1.jpg" />
+                                    </div>
+                                    <div class="video-play-icon"></div>
+                                    <iframe
+                                        data-src="https://www.youtube.com/embed/6p45ooZOOPo?autoplay=1"
+                                        allowfullscreen="allowfullscreen"
+                                    ></iframe>
+                                </div>
+                                <span class="h4 inline-block">Video Title</span>
+                                <span>Detailed Description</span>
+                            </div>
+                        </div>
+                        -->
+                    </div>
+                </div>
+            </section>
+            <my-footer></my-footer>
+        </div>
     </div>
 </template>
 
 <script>
-// 引入d3
-import * as d3 from 'd3'
+import MyFooter from '@/components/Footer'
+
 export default {
-    data () {
+    data: function () {
         return {
-            data: [73, 52, 33, 22, 14, 68]
+            isSideMenuShowing: false,
+            username: 'username'
         }
     },
     methods: {
-        draw () {
-            let margin = 30 // 上下左右边距
-
-            let svg = d3.select('svg')
-            let width = svg.attr('width')
-            let height = svg.attr('height')
-
-            // 创建矩形分组
-            let g = svg.append('g')
-                .attr('transform', 'translate(' + margin + ',' + margin + ')') // 图表距离视口的左、上距离
-
-            // 定义 X 轴比例尺
-            let scaleX = d3.scaleBand()
-                .domain(d3.range(this.data.length))
-                .rangeRound([0, width - margin * 2])
-
-            // 定义 y 轴比例尺
-            let scaleY = d3.scaleLinear()
-                .domain([0, d3.max(this.data)])
-                .range([height - margin * 2, 0])
-            // 上边距30；注意：range 后面跟的参数0，放在第二位 因为 y轴正方向向下
-
-            // 绘制 x y 轴
-            let axisX = d3.axisBottom(scaleX)
-            let axisY = d3.axisLeft(scaleY)
-            g.append('g').attr('transform', 'translate(0, ' + (height - margin * 2) + ')').call(axisX)
-            g.append('g').attr('transform', 'translate(0,0)').call(axisY)
-
-            // 创建矩形分组
-            let gs = g.selectAll('rect')
-                .data(this.data)
-                .enter()
-                .append('g')
-
-            // 绘制矩形 + 过渡效果
-            let rectP = 40 // 柱状图间距
-            gs.append('rect')
-                .attr('x', function (d, i) {
-                    return scaleX(i) + rectP / 2
-                })
-                .attr('y', function (d, i) {
-                    var min = scaleY.domain()[0] // [0, 73]
-                    return scaleY(min)
-                    // scaleY(0) y轴比例尺映射出来的是最大值；这个效果等同于 return height - 2*margin 的效果
-                })
-                .attr('width', function (d, i) {
-                    return scaleX.step() - rectP
-                })
-                .attr('height', function (d, i) {
-                    return 0 // 动画初始状态为0
-                })
-                .attr('fill', 'pink')
-                .transition()
-                .duration(1500)
-                .delay(function (d, i) {
-                    return i * 200 // 每个柱子逐渐开始的效果
-                })
-                .attr('y', function (d, i) {
-                    return scaleY(d)
-                })
-                .attr('height', function (d, i) {
-                    return height - margin * 2 - scaleY(d)
-                })
-
-            // 添加鼠标划入划出事件
-            gs.on('mouseover', function () {
-                d3.select(this.firstChild) // 这里的this是包含：rect text 的节点
-                    .transition()
-                    .duration(1000)
-                    .delay(200)
-                    .attr('fill', '#306ade')
-            })
-
-            gs.on('mouseout', function () {
-                d3.select(this.firstChild)
-                    .transition()
-                    .duration(1000)
-                    .delay(200)
-                    .attr('fill', 'pink')
-            })
-
-            // 绘文字 + 过渡效果
-            gs.append('text')
-                .attr('x', function (d, i) {
-                    return scaleX(i) + rectP
-                })
-                .attr('y', function (d, i) {
-                    return height - 2 * margin
-                })
-                .attr('dx', function (d, i) {
-                    return -2
-                })
-                .attr('dy', function (d, i) {
-                    return 20
-                })
-                .text(function (d, i) {
-                    return d
-                })
-                .attr('fill', 'green')
-                .transition()
-                .duration(1500)
-                .delay(function (d, i) {
-                    return i * 200
-                })
-                .attr('y', function (d, i) {
-                    return scaleY(d)
-                })
+        showSideMenu (flag) {
+            this.isSideMenuShowing = flag
+        },
+        clickWrapper (event) {
+            event.stopPropagation()
+        },
+        signout () {
+            // signout logic
+            // send message to server
+            sessionStorage.removeItem('token')
+            this.$router.push({ name: 'Login' })
         }
     },
-    mounted () {
-        this.draw()
+    components: {
+        MyFooter
     }
 }
 </script>
+
+<style scoped>
+.from-right-enter-active {
+    animation: from-right 0.3s linear 0s forwards;
+}
+.from-right-leave-active {
+    animation: from-right 0.3s linear 0s reverse;
+}
+@keyframes from-right {
+    from {
+        transform: translate3d(100%, 0, 0);
+        -webkit-transform: translate3d(100%, 0, 0);
+        opacity: 1;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        -webkit-transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+.mask {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 10;
+    transition: all 0.2s ease-in;
+}
+</style>

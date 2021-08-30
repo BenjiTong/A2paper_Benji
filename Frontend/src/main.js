@@ -3,12 +3,16 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-
-import '@/assets/css/socicon.css'
+import querystring from 'query-string'
 import '@/assets/css/bootstrap.css'
 import '@/assets/css/stack-interface.css'
 import '@/assets/css/theme-serpent.css'
 import '@/assets/css/custom.css'
+
+// premise
+import VueResource from 'vue-resource'
+Vue.prototype.$querystring = querystring
+Vue.use(VueResource)
 
 Vue.config.productionTip = false
 
@@ -23,7 +27,7 @@ function fakeAuth () {
 }
 
 router.beforeEach((to, from, next) => {
-    if (to.meta.requireAuth && !fakeAuth) {
+    if (to.meta.requireAuth && !fakeAuth()) {
         // Check login state
         next({ path: '/login' })
     } else {
