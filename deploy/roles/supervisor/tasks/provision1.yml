@@ -1,7 +1,7 @@
 ---
  
 - name: Create EC2 instance
-  command: "aws ec2 run-instances --image-id ami-09e67e426f25ce0d7 --count {{inst_count}} --instance-type {{ instance_type }} --key-name ec2key --security-group-ids sg-0984573a1a37c1d1a --subnet-id subnet-07a9d9803eb8d6cb7"
+  command: "aws ec2 run-instances --image-id {{image}} --count {{inst_count}} --instance-type {{ instance_type }} --key-name {{ ec2_key_name }} "
 
 - name: Sleep for 60 seconds
   pause:

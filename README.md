@@ -3,6 +3,32 @@ A2 main project
 
 ## Quick start
 
+step 1. start the supervisor server
+
+13.229.208.228 is the public IP.
+
+It could be forbidde by the GFW. Redo step 1 to get another IP.
+It could be the Security Group reason. Ok, let's go to step2.
+
+step 2. init the supervisor
+
+The server is very slow from China mainland, so it is better that if you have a good oversea server to visit amazon IDC.
+
+step 3. prepare the auto deployment envionment
+
+There are lots of python pakcage needing to be installed.
+
+Ensure the group_vars/all content do not contains : unused host ip.
+Ensure the initial is true.
+Ensure the python path is right.
+
+step 4. start the EC2 server: nginx * 2 + tomcat * 2
+
+In this step, 2 nginx EC2 and a ELB will be installed and 2 tomcat E2C will be ready.
+
+step 5. install nginx and tomcat and java server
+
+Fisrt of all, we need to check 2 of nginx and 2 of tomcat could be at the right position in hosts and all files.
 
 
 
