@@ -16,7 +16,7 @@ Initial Configuration
 
 ```shell
 
-inventories/hosts: 
+hosts: 
   ansible_python_interpreter=/Users/chenzhen/Documents/workspace/compx527/bin/python
 group_vars/all:
   initial: true
