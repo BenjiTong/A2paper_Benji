@@ -20,7 +20,7 @@ class Sec_Mysql:
         if conn != None:
             return conn
 
-        secret_name = "MyRDSInstanceRotationSecret-egjiTPMji48K"
+        secret_name = "MyRDSInstanceRotationSecret-8guDf8SkolUm"
         region_name = "us-east-1"
 
 
