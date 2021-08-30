@@ -1,7 +1,7 @@
 initial: 
-    false
-terminate: 
     true
+terminate: 
+    false
 
 debug: true
 
@@ -31,7 +31,6 @@ tomcatservers:
 
 nginxservers:
 #nginxservers
-
   
 
 dbservers:

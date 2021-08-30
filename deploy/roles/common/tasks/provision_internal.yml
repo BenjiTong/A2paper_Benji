@@ -9,7 +9,7 @@
       - proto: tcp
         from_port: 22
         to_port: 22
-        cidr_ip: 0.0.0.0/0
+        cidr_ip: 172.31.0.0/16
       - proto: tcp
         from_port: 8080
         to_port: 8080
@@ -31,7 +31,7 @@
     seconds: 60
    
 - name: Get IP address of the newly created host so that we can further contact it
-  shell: "aws ec2 describe-instances --query 'Reservations[*].Instances[*].[State.Name,InstanceId,PublicIpAddress]' --output text | grep running | awk '{print $3}'"
+  shell: "aws ec2 describe-instances --query 'Reservations[*].Instances[*].[State.Name,InstanceId,PrivateIpAddress]' --output text | grep running | awk '{print $3}'"
   register: ec2_ip
 
 - name: Add the newly created EC2 instance(s) to the inventory file

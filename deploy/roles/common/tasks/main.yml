@@ -14,7 +14,7 @@
     server_type: nginxservers
     inst_count: 1
     ec2_group_name: zone_a_group
-    subnet: subnet-c177d989
+    subnet: subnet-0d48c844db4369b01
   when: initial
   tags:
     - nginx
@@ -24,7 +24,7 @@
     server_type: nginxservers
     inst_count: 1
     ec2_group_name: zone_b_group
-    subnet: subnet-ba94e1e3
+    subnet: subnet-0a6f31ce699892394
   when: initial
   tags:
     - nginx
@@ -42,7 +42,7 @@
     server_type: tomcatservers    
     inst_count: 2
     ec2_group_name: zone_c_group
-    subnet: subnet-17209e71
+    subnet: subnet-0d2cf1aaf87f39d46
   when: initial
 
 
