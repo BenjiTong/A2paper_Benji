@@ -108,7 +108,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!--
                         <div class="masonry__container row masonry--active">
                             <div
                                 class="
@@ -116,23 +115,12 @@
                                     col-md-6 col-12
                                     filter-filter-1
                                 "
-                                data-masonry-filter="Filter 1"
                             >
-                                <div class="video-cover border--round">
-                                    <div class="background-image-holder">
-                                        <img alt="image" src="img/blog-1.jpg" />
-                                    </div>
-                                    <div class="video-play-icon"></div>
-                                    <iframe
-                                        data-src="https://www.youtube.com/embed/6p45ooZOOPo?autoplay=1"
-                                        allowfullscreen="allowfullscreen"
-                                    ></iframe>
-                                </div>
+                                <my-line-chart></my-line-chart>
                                 <span class="h4 inline-block">Video Title</span>
                                 <span>Detailed Description</span>
                             </div>
                         </div>
-                        -->
                     </div>
                 </div>
             </section>
@@ -143,6 +131,7 @@
 
 <script>
 import MyFooter from '@/components/Footer'
+import MyLineChart from '@/components/MultiLineChart'
 
 export default {
     data: function () {
@@ -166,7 +155,8 @@ export default {
         }
     },
     components: {
-        MyFooter
+        MyFooter,
+        MyLineChart
     }
 }
 </script>

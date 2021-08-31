@@ -45,7 +45,7 @@ export default {
                     scope: 'read:user',
                     state: 'A2Inc', // An unguessable random string. It is used to protect against cross-site request forgery attacks.
                     getCodeURL: 'https://github.com/login/oauth/authorize',
-                    redirectURL: 'http://localhost:8888/#/oauth/redirect'
+                    redirectURL: 'http://localhost:8888/oauth/redirect'
                 }
             ]
         }
@@ -57,7 +57,8 @@ export default {
             // if not
             if (index === 0) {
                 // console.info(this.formatGitHubCodeURL)
-                window.open(this.formatGitHubCodeURL)
+                // window.open(this.formatGitHubCodeURL)
+                window.location.href = this.formatGitHubCodeURL
             }
             /*
             this.$http.jsonp(
