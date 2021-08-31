@@ -30,8 +30,26 @@ def process(item_path, bbox, date_time, city_id):
     # bucket_name, prefix_path, file_name = FileUtils.parse_s3_path(item_path)
     
     # file_name = '/tmp/{}'.format(file_name)
+    conn = Sec_Mysql.get_mysql_conn()
 
     file_name = '/vsicurl/{}'.format(item_path)
+    
+    try:
+        cur = conn.cursor()
+        cur.execute("select id from main where city_id='{}' and file='{}'".format(city_id, file_name))
+        cur.fetchall()
+        conn.commit()        
+        if cur.rowcount > 0:
+            print('[INFO]Duplicate! file is {}, city is {}'.format(file_name, city_id))
+            return
+    except Exception as e:
+        conn.rollback()
+        print("[ERROR]Database connection failed or excute error due to {}".format(e)) 
+        return 
+    finally:
+        cur.close()
+    
+    
     #.replace('s3://','/vsis3/')
 
     # if FileUtils.exist_s3_path(s3, item_path) and not FileUtils.exsit_native_path(file_name):
@@ -43,11 +61,8 @@ def process(item_path, bbox, date_time, city_id):
     s3_extent = GdalCommonUtils.get_envelope(s3_dataset)
     s3_geometry = OgrCommonUtils.create_geometry_from_bbox(s3_extent[0],s3_extent[1],s3_extent[2],s3_extent[3])
     if not wait_geometry.Intersects(s3_geometry):
-        print('INFO:do not intersect,exit! file is '+ file_name)
-        return {
-            'statusCode': 200,
-            'body': json.dumps('Input data do not intersect! file is '+ file_name)
-        }
+        print('[INFO]do not intersect,exit! file is '+ file_name)
+        return
     
     aoi_geometry = s3_geometry.Intersection(wait_geometry)
 
@@ -57,11 +72,11 @@ def process(item_path, bbox, date_time, city_id):
     aoi_x_max = min(temp_x_max, area[2])
     aoi_y_max = min(temp_y_max, area[3])
     aoi_extent = [aoi_x_min, aoi_y_min, aoi_x_max, aoi_y_max]
-    print('INFO: IOU Envelope={}'.format(aoi_extent))
+    print('[INFO]IOU Envelope={}'.format(aoi_extent))
 
     # Get raster data from input Datasets.
     left, top, right, bottom = GdalCommonUtils.get_reading_window(s3_dataset, aoi_extent)
-    print(' + s3 Dataset Window=({},{},{},{}) Size=({},{})'.format(left, top, right, bottom, right-left, bottom-top))
+    print('[INFO]s3 Dataset Window=({},{},{},{}) Size=({},{})'.format(left, top, right, bottom, right-left, bottom-top))
     s3_raster = s3_dataset.GetRasterBand(1).ReadAsArray(xoff=left, yoff=top, win_xsize=right-left, win_ysize=bottom-top)
 
 
@@ -77,12 +92,12 @@ def process(item_path, bbox, date_time, city_id):
     sum_of_value_pixels = np.sum(s3_raster)
 
     if count_of_value_pixels == 0:
-        return 'filter zero area: {}'.format(file_name)
+        print('[INFO]filter zero area: {}'.format(file_name))
+        return
 
     del s3_raster
     # FileUtils.delete_native_file(file_name)
 
-    conn = Sec_Mysql.get_mysql_conn()
 
     sql = ("INSERT INTO main(`datetime`, `radiance`, `pixels`, `city_id`, `window`, `file`) VALUES (%s, %s, %s, %s, %s, %s)")
     data = (date_time, str(sum_of_value_pixels), count_of_value_pixels, city_id, str(bbox), file_name)
@@ -91,12 +106,15 @@ def process(item_path, bbox, date_time, city_id):
         cur = conn.cursor()
         cur.execute(sql,data)
         conn.commit()
-        print('{} insert success!'.format(file_name))
+        print('[INFO]{} insert success!'.format(file_name))
     except Exception as e:
         conn.rollback()
-        print("Database connection failed or excute error due to {}".format(e))  
-
-    return 'process over:{}'.format(file_name)
+        print("[ERROR]Database connection failed or excute error due to {}".format(e))  
+    finally:
+        cur.close()
+        conn.close()
+        
+    return '[INFO]process over:{}'.format(file_name)
 
 # process('https://globalnightlight.s3.amazonaws.com/201305/SVDNB_npp_d20130501_t1856278_e1902082_b07823_c20130502010209874894_noaa_ops.rade9.co.tif',
 # [
