@@ -1,34 +1,7 @@
 ---
-
-- name: Create a security group
-  ec2_group:
-    name: "zone_a_group"
-    description: The security group from zone A
-    region: "{{ region }}"
-    rules:
-      - proto: tcp
-        from_port: 22
-        to_port: 22
-        cidr_ip: 0.0.0.0/0
-      - proto: tcp
-        from_port: 80
-        to_port: 80
-        cidr_ip: 0.0.0.0/0
-      - proto: tcp
-        from_port: 443
-        to_port: 443
-        cidr_ip: 0.0.0.0/0
-      - proto: tcp
-        from_port: 8080
-        to_port: 8080
-        cidr_ip: 172.31.0.0/16
-    rules_egress:
-      - proto: all
-        cidr_ip: 0.0.0.0/0
-  register: ec2_sec_group
-
+ 
 - name: Create EC2 instance
-  command: "aws ec2 run-instances --image-id {{ image }} --count {{inst_count}} --instance-type {{ instance_type }} --key-name {{ ec2_key_name }} --security-group-ids {{ ec2_sec_group.group_id }}  --subnet-id subnet-c177d989"
+  command: "aws ec2 run-instances --image-id {{image}} --count {{inst_count}} --instance-type {{ instance_type }} --key-name {{ ec2_key_name }} "
 
 - name: Sleep for 60 seconds
   pause:

@@ -1,0 +1,179 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Static STAC Crawler
+Globals:
+  Function:
+    Runtime: python3.7
+Resources:
+  lmdRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      - arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+      - arn:aws:iam::aws:policy/AmazonSQSFullAccess
+      - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+      - arn:aws:iam::aws:policy/AmazonSNSFullAccess
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      Path: /
+  RolePolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: root
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action: secretsmanager:GetSecretValue
+          Resource: arn:aws:secretsmanager:*:154096909498:secret:*
+        - Effect: Allow
+          Action:
+          - ec2:AttachNetworkInterface
+          - ec2:CreateNetworkInterface
+          - ec2:CreateNetworkInterfacePermission
+          - ec2:DeleteNetworkInterface
+          - ec2:DeleteNetworkInterfacePermission
+          - ec2:DescribeDhcpOptions
+          - ec2:DescribeNetworkInterfaces
+          - ec2:DescribeNetworkInterfacePermissions
+          - ec2:DescribeSubnets
+          - ec2:DescribeVpcs
+          - ec2:DescribeInstances
+          Resource: '*'
+      Roles:
+      - Ref: lmdRole
+  CatalogCrawlQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+      VisibilityTimeout: 180
+  ItemlQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+      VisibilityTimeout: 1800
+  CatalogCrawTrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 10
+      EventSourceArn:
+        Fn::GetAtt:
+        - CatalogCrawlQueue
+        - Arn
+      FunctionName:
+        Ref: CrawlFunction
+  ItemTrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 1
+      EventSourceArn:
+        Fn::GetAtt:
+        - ItemlQueue
+        - Arn
+      FunctionName:
+        Ref: ItemFunction
+  GeneralLambdaDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+  GeneralLambdaDLQ2:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+  CrawlStartFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://a2-backup-sqs-sns-us/bbfa3e9c40785e432a23badb031a49bb
+      Handler: crawler.start_handler
+      Role:
+        Fn::GetAtt:
+        - lmdRole
+        - Arn
+      Policies: null
+      Description: Starts crawling process
+      Timeout: 10
+      Environment:
+        Variables:
+          CATALOG_CRAWL_QUEUE:
+            Ref: CatalogCrawlQueue
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn:
+          Fn::GetAtt:
+          - GeneralLambdaDLQ
+          - Arn
+      Layers:
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+      - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1
+  CrawlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://a2-backup-sqs-sns-us/bbfa3e9c40785e432a23badb031a49bb
+      Handler: crawler.sqs_handler
+      Role:
+        Fn::GetAtt:
+        - lmdRole
+        - Arn
+      Policies: null
+      Description: Traverse the crawl queue
+      Timeout: 180
+      Environment:
+        Variables:
+          CATALOG_CRAWL_QUEUE:
+            Ref: CatalogCrawlQueue
+          STAC_ITEM_TOPIC:
+            Ref: ItemlQueue
+          MAX_CHILDREN: 10000
+          MAX_ITEM: 5000
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn:
+          Fn::GetAtt:
+          - GeneralLambdaDLQ
+          - Arn
+      Layers:
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
+      - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1
+  ItemFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://a2-backup-sqs-sns-us/bbfa3e9c40785e432a23badb031a49bb
+      Handler: sns_processor.lambda_handler
+      Role:
+        Fn::GetAtt:
+        - lmdRole
+        - Arn
+      Policies: null
+      Description: Traverse the crawl queue
+      Timeout: 180
+      ReservedConcurrentExecutions: 10
+      MemorySize: 1024
+      Environment:
+        Variables:
+          CATALOG_CRAWL_QUEUE:
+            Ref: CatalogCrawlQueue
+          STAC_ITEM_TOPIC:
+            Ref: ItemlQueue
+          MAX_CHILDREN: 10000
+          MAX_ITEM: 5000
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn:
+          Fn::GetAtt:
+          - GeneralLambdaDLQ2
+          - Arn
+      Layers:
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
+      - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
+      - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1

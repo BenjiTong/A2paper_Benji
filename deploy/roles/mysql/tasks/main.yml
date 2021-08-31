@@ -1,0 +1,7 @@
+---
+
+- name: pls run 'make deploy' in roles/mysql/templates/
+  debug:
+   msg: pls run 'make deploy' in roles/mysql/templates/
+
+  

@@ -1,0 +1,12 @@
+---
+
+- name: aws delete rds cluster
+  shell: "aws rds delete-db-cluster \
+              --db-cluster-identifier A2-cluster \
+              --skip-final-snapshot"
+  tags: delete
+
+- name: aws delete rds master database
+  shell: " aws rds delete-db-instance \
+              --db-instance-identifier A2-cluster-instance --skip-final-snapshot"
+  tags: delete

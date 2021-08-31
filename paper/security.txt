@@ -9,4 +9,9 @@ create user: A2_DevOps  group:admin  attached permissions:administrator access
 use  https://154096909498.signin.aws.amazon.com/console login aws
 
 
+create role: runlambda for Lambda visiting the S3
+I will create a new IAM role to attach to our new function a basic Lambda function's execution role to grant permission of access to necessary AWS services. The AWSLambdaBasicExecutionRole and AmazonS3FullAccess policies are enough:
 
+
+arn:aws:lambda:us-west-2:552188055668:layer:geolambda:2
+arn:aws:lambda:us-west-2:552188055668:layer:geolambda-python:1

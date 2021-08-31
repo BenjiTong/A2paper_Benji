@@ -1,0 +1,212 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: 'Static STAC Crawler'
+
+Globals:
+  Function:
+    Runtime: python3.7
+
+Resources:
+
+  #################################################
+  # Roles start
+  #################################################
+
+  lmdRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+        - "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+        - "arn:aws:iam::aws:policy/AmazonSQSFullAccess"
+        - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+      Path: "/"
+   
+  RolePolicies: 
+    Type: "AWS::IAM::Policy"
+    Properties: 
+      PolicyName: "root"
+      PolicyDocument: 
+        Version: "2012-10-17"
+        Statement: 
+          - Effect: "Allow"
+            Action: "secretsmanager:GetSecretValue"
+            Resource: "arn:aws:secretsmanager:*:154096909498:secret:*"
+          - Effect: "Allow"
+            Action: 
+              - ec2:AttachNetworkInterface
+              - ec2:CreateNetworkInterface
+              - ec2:CreateNetworkInterfacePermission
+              - ec2:DeleteNetworkInterface
+              - ec2:DeleteNetworkInterfacePermission
+              - ec2:DescribeDhcpOptions
+              - ec2:DescribeNetworkInterfaces
+              - ec2:DescribeNetworkInterfacePermissions
+              - ec2:DescribeSubnets
+              - ec2:DescribeVpcs
+              - ec2:DescribeInstances
+            Resource: "*"
+      Roles: 
+        - Ref: "lmdRole"
+
+  #################################################
+  # Roles end
+  #################################################
+
+  #################################################
+  # SQS start (include triggers)
+  #################################################
+
+  CatalogCrawlQueue:
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      MessageRetentionPeriod: 1209600
+      VisibilityTimeout: 180
+
+  ItemlQueue:
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      MessageRetentionPeriod: 1209600
+      VisibilityTimeout: 1800
+
+  CatalogCrawTrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 10
+      EventSourceArn: !GetAtt [CatalogCrawlQueue, Arn]
+      FunctionName: !Ref CrawlFunction
+
+  ItemTrigger:
+    Type: AWS::Lambda::EventSourceMapping
+    Properties:
+      BatchSize: 1
+      EventSourceArn: !GetAtt [ItemlQueue, Arn]
+      FunctionName: !Ref ItemFunction
+
+  #################################################
+  # SQS end
+  #################################################
+  #################################################
+  # Lambda start (include dead letter queues)
+  #################################################
+
+  GeneralLambdaDLQ: 
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      MessageRetentionPeriod: 1209600
+  
+  GeneralLambdaDLQ2: 
+    Type: 'AWS::SQS::Queue'
+    Properties:
+      MessageRetentionPeriod: 1209600
+
+  CrawlStartFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: processor
+      Handler: crawler.start_handler
+      Role: !GetAtt lmdRole.Arn
+      Policies:
+      Description: Starts crawling process
+      Timeout: 10
+      Environment:
+        Variables:
+          CATALOG_CRAWL_QUEUE: !Ref CatalogCrawlQueue
+      DeadLetterQueue:
+        Type: 'SQS'
+        TargetArn: !GetAtt GeneralLambdaDLQ.Arn
+      Layers:
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:2
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:1
+        - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1
+      # VpcConfig:
+      #   SecurityGroupIds:
+      #     - sg-0984573a1a37c1d1a
+      #   SubnetIds:
+      #     - subnet-03f58fc5f9501f18a
+      #     - subnet-0a54c95baf6c74af9
+
+  CrawlFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: processor
+      Handler: crawler.sqs_handler
+      Role: !GetAtt lmdRole.Arn
+      Policies:
+      Description: Traverse the crawl queue
+      Timeout: 180
+      Environment:
+        Variables:
+          CATALOG_CRAWL_QUEUE: !Ref CatalogCrawlQueue
+          STAC_ITEM_TOPIC: !Ref ItemlQueue
+          MAX_CHILDREN: 10000
+          MAX_ITEM: 5000
+      DeadLetterQueue:
+        Type: 'SQS'
+        TargetArn: !GetAtt GeneralLambdaDLQ.Arn
+      Layers:
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
+        - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1
+      # VpcConfig:
+      #   SecurityGroupIds:
+      #     - sg-0984573a1a37c1d1a
+      #   SubnetIds:
+      #     - subnet-03f58fc5f9501f18a
+      #     - subnet-0a54c95baf6c74af9
+
+  ItemFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: processor
+      Handler: sns_processor.lambda_handler
+      Role: !GetAtt lmdRole.Arn
+      Policies:
+      Description: Traverse the crawl queue
+      Timeout: 180
+      ReservedConcurrentExecutions: 10
+      MemorySize: 1024
+      Environment:
+        Variables:
+          CATALOG_CRAWL_QUEUE: !Ref CatalogCrawlQueue
+          STAC_ITEM_TOPIC: !Ref ItemlQueue
+          MAX_CHILDREN: 10000
+          MAX_ITEM: 5000
+      DeadLetterQueue:
+        Type: 'SQS'
+        TargetArn: !GetAtt GeneralLambdaDLQ2.Arn
+      Layers:
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda:4
+        - arn:aws:lambda:us-east-1:552188055668:layer:geolambda-python:3
+        - arn:aws:lambda:us-east-1:154096909498:layer:mysqllib:1
+      # VpcConfig:
+      #   SecurityGroupIds:
+      #     - sg-0984573a1a37c1d1a
+      #   SubnetIds:
+      #     - subnet-03f58fc5f9501f18a
+      #     - subnet-0a54c95baf6c74af9
+
+  #################################################
+  # Lambda end
+  #################################################
+
+  # SQSEndpoint:
+  #   Type: 'AWS::EC2::VPCEndpoint'
+  #   Properties:
+  #     VpcEndpointType: Interface
+  #     SubnetIds:
+  #       - subnet-03f58fc5f9501f18a
+  #       - subnet-0a54c95baf6c74af9
+  #     ServiceName: !Sub 'com.amazonaws.${AWS::Region}.lambda'
+  #     VpcId: vpc-0316b5b071295829b
