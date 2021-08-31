@@ -92,7 +92,7 @@ Resources:
   CrawlStartFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/bbfa3e9c40785e432a23badb031a49bb
+      CodeUri: s3://a2-backup-sqs-sns-us/ae4fa87f550f8599eca7830950f72a72
       Handler: crawler.start_handler
       Role:
         Fn::GetAtt:
@@ -118,7 +118,7 @@ Resources:
   CrawlFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/bbfa3e9c40785e432a23badb031a49bb
+      CodeUri: s3://a2-backup-sqs-sns-us/ae4fa87f550f8599eca7830950f72a72
       Handler: crawler.sqs_handler
       Role:
         Fn::GetAtt:
@@ -148,7 +148,7 @@ Resources:
   ItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/bbfa3e9c40785e432a23badb031a49bb
+      CodeUri: s3://a2-backup-sqs-sns-us/ae4fa87f550f8599eca7830950f72a72
       Handler: sns_processor.lambda_handler
       Role:
         Fn::GetAtt:

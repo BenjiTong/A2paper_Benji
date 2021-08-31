@@ -17,7 +17,7 @@ class Sec_Mysql:
     def get_mysql_conn():
 
         global conn
-        if conn != None:
+        if conn != None and conn.is_connected():
             return conn
 
         secret_name = "MyRDSInstanceRotationSecret-8guDf8SkolUm"

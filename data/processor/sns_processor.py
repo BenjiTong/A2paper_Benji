@@ -38,17 +38,17 @@ def process(item_path, bbox, date_time, city_id):
         cur = conn.cursor()
         cur.execute("select id from main where city_id='{}' and file='{}'".format(city_id, file_name))
         cur.fetchall()
-        conn.commit()        
-        if cur.rowcount > 0:
+        conn.commit()  
+        cnt = cur.rowcount   
+        cur.close()   
+        if cnt > 0:
             print('[INFO]Duplicate! file is {}, city is {}'.format(file_name, city_id))
             return
     except Exception as e:
         conn.rollback()
+        conn.close()
         print("[ERROR]Database connection failed or excute error due to {}".format(e)) 
-        return 
-    finally:
-        cur.close()
-    
+        return
     
     #.replace('s3://','/vsis3/')
 
@@ -106,13 +106,13 @@ def process(item_path, bbox, date_time, city_id):
         cur = conn.cursor()
         cur.execute(sql,data)
         conn.commit()
+        cur.close()
+        conn.close()
         print('[INFO]{} insert success!'.format(file_name))
     except Exception as e:
         conn.rollback()
-        print("[ERROR]Database connection failed or excute error due to {}".format(e))  
-    finally:
-        cur.close()
         conn.close()
+        print("[ERROR]Database connection failed or excute error due to {}".format(e))  
         
     return '[INFO]process over:{}'.format(file_name)
 
