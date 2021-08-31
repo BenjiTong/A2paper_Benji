@@ -1,98 +1,94 @@
 <template>
-    <div class="row lyear-wrapper">
-        <div class="lyear-login">
-            <div class="login-center">
-                <div class="form-group has-feedback feedback-left">
-                    <input
-                        type="text"
-                        placeholder="Your email"
-                        v-model="email"
-                    />
-                    <span
-                        class="mdi mdi-account form-control-feedback"
-                        aria-hidden="true"
-                    ></span>
+    <div data-smooth-scroll-offset="77">
+        <div class="nav-container"></div>
+        <div class="main-container">
+            <section class="height-100 text-center">
+                <div class="container pos-vertical-center">
+                    <div class="row">
+                        <div class="col-md-7 col-lg-5">
+                            <h2>Sign in with</h2>
+
+                            <ul>
+                                <li
+                                    v-for="way in signInWays"
+                                    v-bind:key="way.id"
+                                >
+                                    <input
+                                        class="btn btn--primary type--uppercase"
+                                        type="button"
+                                        @click="submit(way.id)"
+                                        v-bind:value="way.label"
+                                    />
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group has-feedback feedback-left">
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        v-model="password"
-                    />
-                    <span
-                        class="mdi mdi-lock form-control-feedback"
-                        aria-hidden="true"
-                    ></span>
-                </div>
-                <div class="form-group">
-                    <input
-                        class="btn btn-block btn-primary"
-                        type="button"
-                        @click="submit"
-                        value="Login"
-                    />
-                </div>
-                <hr />
-                <footer class="col-sm-12 text-center">
-                    <p class="m-b-0">{{ copyright }}</p>
-                </footer>
-            </div>
+            </section>
+            <my-footer />
         </div>
     </div>
 </template>
 
 <script>
+import MyFooter from '@/components/Footer'
+
 export default {
     data: function () {
         return {
-            email: '',
-            password: '',
-            copyright: 'Copyright © 2021 A2Inc. All right reserved'
+            signInWays: [
+                { id: 0, label: 'Github' }
+            ],
+            wayDetails: [
+                {
+                    client_id: '42a45d2fefb71837398e',
+                    scope: 'read:user',
+                    state: 'A2Inc', // An unguessable random string. It is used to protect against cross-site request forgery attacks.
+                    getCodeURL: 'https://github.com/login/oauth/authorize',
+                    redirectURL: 'http://localhost:8888/#/oauth/redirect'
+                }
+            ]
         }
     },
     methods: {
-        submit: function () {
-            // Http request here
+        submit: function (index) {
+            // check if log in
+
+            // if not
+            if (index === 0) {
+                // console.info(this.formatGitHubCodeURL)
+                window.open(this.formatGitHubCodeURL)
+            }
+            /*
+            this.$http.jsonp(
+                'github/login/oauth/authorize',
+                {
+                    'params': this.wayDetails[index]
+                })
+                .then((response) => {
+                    console.info(response.body)
+                }, (response) => {
+                    console.error(response)
+                })
+*/
+            // Temp create fake token
+            // sessionStorage.setItem('token', '123')
+            // this.$router.push({ name: 'Index' })
         }
+    },
+    computed: {
+        formatGitHubCodeURL: function () {
+            let detail = this.wayDetails[0]
+            return detail.getCodeURL + ('?' + this.$querystring.stringify({
+                client_id: detail.client_id,
+                scope: detail.scope,
+                state: detail.state,
+                redirect_uri: detail.redirectURL
+            }))
+        }
+    },
+    components: {
+        MyFooter
     }
 }
 </script>
-
-<style scoped>
-.lyear-wrapper {
-    position: relative;
-}
-.lyear-login {
-    display: flex !important;
-    min-height: 100vh;
-    align-items: center !important;
-    justify-content: center !important;
-}
-.login-center {
-    /* background: #fff; */
-    background: rgba(255, 255, 255, 0.5);
-    min-width: 38.25rem;
-    padding: 2.14286em 3.57143em;
-    border-radius: 5px;
-    margin: 2.85714em 0;
-}
-.login-header {
-    margin-bottom: 1.5rem !important;
-}
-.login-center .has-feedback.feedback-left .form-control {
-    padding-left: 38px;
-    padding-right: 12px;
-}
-.login-center .has-feedback.feedback-left .form-control-feedback {
-    left: 0;
-    right: auto;
-    width: 38px;
-    height: 38px;
-    line-height: 38px;
-    z-index: 4;
-    color: #dcdcdc;
-}
-.login-center .has-feedback.feedback-left.row .form-control-feedback {
-    left: 15px;
-}
-</style>
