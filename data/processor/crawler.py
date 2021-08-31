@@ -10,11 +10,6 @@ global url
 url = 'https://globalnightlight.s3.amazonaws.com/VIIRS_npp_catalog.json'
 
 wait_area = FileUtils.WAIT_LIST
- 
-global counter
-counter = 0
-
-
 
 def url_to_json(url: str):
     with urlopen(url) as furl:
@@ -48,28 +43,19 @@ def native_handle_sqs(event, context):
 
     for record in records:    
         url = record['body']
-        if counter >= max_item:
-            print('reach peak counter:' + str(counter) +' from sns: ' + url)
-            return
-        
+       
         catalog = url_to_json(url)
         child_links, items = get_links(catalog, url)
         for index, clink in enumerate(child_links):
-            if index >= max_link:
-                break
             SQS_CLIENT.send_message(QueueUrl=to_be_visited_queue,
                                         MessageBody=clink)
             print('Catalog inserted: ', clink)
             #native_handle_sqs(clink)  # can be pushed to SQS
 
         for item in items:
-            if counter >= max_item:
-                print('reach peak counter:' + str(counter))
-                break
             itr = url_to_json(item)
             for idx, area in wait_area.items():
                 if FileUtils.is_overlap(area, itr['bbox']):
-                    counter += 1
                     result = {
                         'city_id': idx,
                         'bbox': itr['bbox'],

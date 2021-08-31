@@ -93,6 +93,7 @@ def process(item_path, bbox, date_time, city_id):
         conn.commit()
         print('{} insert success!'.format(file_name))
     except Exception as e:
+        conn.rollback()
         print("Database connection failed or excute error due to {}".format(e))  
 
     return 'process over:{}'.format(file_name)
