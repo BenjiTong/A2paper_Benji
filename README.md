@@ -34,7 +34,7 @@ Lambda codes need to be modified as the new mysql ip.
 
 Our main site is running at ap-southeast-1.
 
-### step 6. deploy the lambda function && SQS to process the open data of S3 [lambda,SQS,CloudWatch]
+### step 6. deploy the lambda function && SQS to process the open data of S3 [lambda,SQS,CloudWatch,S3]
 
 Run create.sql in master node. The crawler must be deployed to us-east-1, which is closed to S3 open data. Do note forget update the DB configuration.
 
@@ -42,9 +42,11 @@ Trigger the scrawler by a test message.
 
 All of the result will be stored in mysql master endpoint.
 
-URL is http://HttpELB-1499061197.ap-southeast-1.elb.amazonaws.com.
+URL is http://httpelb-1499061197.ap-southeast-1.elb.amazonaws.com/.
 
 Running at Singapore IDC.
+
+All above steps run by a IAM user [IAM].
 
 [End]
 
