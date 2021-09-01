@@ -13,8 +13,8 @@ export default {
                 series: [{ name: 'n1', values: [2.3, 2.4, 2.5, 2.6, 2.7] }, { name: 'n2', values: [0.6, 2.4, 2.5, 2.6, 2.3] }, { name: 'n3', values: [2.1, 2.3, 2.7, 2.6, 2.1] }],
                 dates: [new Date('2000-01-01'), new Date('2000-02-01'), new Date('2000-03-01'), new Date('2000-04-01'), new Date('2000-05-01')]
             },
-            width: 800,
-            height: 600,
+            width: 600,
+            height: 400,
             margin: { top: 20, right: 20, bottom: 30, left: 30 }
         }
     },
