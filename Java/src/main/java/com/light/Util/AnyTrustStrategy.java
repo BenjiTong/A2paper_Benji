@@ -1,4 +1,4 @@
-package com.light.Util;
+package com.light.util;
 
 import org.apache.http.ssl.TrustStrategy;
 

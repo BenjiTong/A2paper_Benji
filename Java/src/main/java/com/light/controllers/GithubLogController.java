@@ -2,8 +2,8 @@ package com.light.controllers;
 
 
 import com.alibaba.fastjson.JSONArray;
-import com.light.Util.GithubConstant;
-import com.light.Util.HttpsUtil;
+import com.light.util.GithubConstant;
+import com.light.util.HttpsUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;

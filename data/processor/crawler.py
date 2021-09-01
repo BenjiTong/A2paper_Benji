@@ -2,6 +2,8 @@ import os
 import json
 import boto3
 from urllib.request import urlopen
+
+from mysql.connector import catch23
 from file_utils import FileUtils
 from sns_processor import process
 
@@ -15,9 +17,13 @@ wait_area = FileUtils.WAIT_LIST
 native_run = FileUtils.native_run
 
 def url_to_json(url: str):
-    with urlopen(url) as furl:
-        content = furl.read()
-    return json.loads(content)
+    try:
+        with urlopen(url) as furl:
+            content = furl.read()
+            return json.loads(content)
+    except Exception as e:
+        print('[ERROR] url load error:{}'.format(url))
+    
 
 def get_links(catalog: json, url: str):
     children = list()

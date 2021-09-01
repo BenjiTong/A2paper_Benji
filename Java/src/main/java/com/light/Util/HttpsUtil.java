@@ -1,4 +1,4 @@
-package com.light.Util;
+package com.light.util;
 
 import java.io.IOException;
 import java.io.InputStream;

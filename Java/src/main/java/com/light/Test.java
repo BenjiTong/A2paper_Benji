@@ -1,6 +1,6 @@
 package com.light;
 
-import com.light.Util.HttpsUtil;
+import com.light.util.HttpsUtil;
 
 public class Test {
     public static void main(String[] args) throws Exception {
