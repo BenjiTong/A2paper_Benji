@@ -12,4 +12,6 @@ import com.light.entity.MainObj;
 public interface MainRepository extends CrudRepository<MainObj, Long> {
 
     List<MainObj> findAll();
+
+    List<MainObj> findByCityId(Integer cityId);
 }
