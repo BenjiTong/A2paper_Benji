@@ -11,6 +11,7 @@ from sm_mysql import Sec_Mysql
 import datetime 
 
 wait_area = FileUtils.WAIT_LIST
+native_run = FileUtils.native_run
 
 s3 = boto3.client('s3')
 

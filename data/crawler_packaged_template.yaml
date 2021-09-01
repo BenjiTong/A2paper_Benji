@@ -55,7 +55,7 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       MessageRetentionPeriod: 1209600
-      VisibilityTimeout: 180
+      VisibilityTimeout: 900
   ItemlQueue:
     Type: AWS::SQS::Queue
     Properties:
@@ -92,7 +92,7 @@ Resources:
   CrawlStartFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/ae4fa87f550f8599eca7830950f72a72
+      CodeUri: s3://a2-backup-sqs-sns-us/be012f7ee64f3870e7309d0f3f054583
       Handler: crawler.start_handler
       Role:
         Fn::GetAtt:
@@ -118,7 +118,7 @@ Resources:
   CrawlFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/ae4fa87f550f8599eca7830950f72a72
+      CodeUri: s3://a2-backup-sqs-sns-us/be012f7ee64f3870e7309d0f3f054583
       Handler: crawler.sqs_handler
       Role:
         Fn::GetAtt:
@@ -126,7 +126,7 @@ Resources:
         - Arn
       Policies: null
       Description: Traverse the crawl queue
-      Timeout: 180
+      Timeout: 900
       Environment:
         Variables:
           CATALOG_CRAWL_QUEUE:
@@ -148,7 +148,7 @@ Resources:
   ItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://a2-backup-sqs-sns-us/ae4fa87f550f8599eca7830950f72a72
+      CodeUri: s3://a2-backup-sqs-sns-us/be012f7ee64f3870e7309d0f3f054583
       Handler: sns_processor.lambda_handler
       Role:
         Fn::GetAtt:

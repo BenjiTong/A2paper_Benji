@@ -36,10 +36,11 @@ class FileUtils:
     Provides utility IO file functions.
     """
     ChinaArea = [108.990515,20.319485,130.478558,40.992357]
-    NZArea = [163.888049,-31.69433,-171.825824,-52.621956]
-    MiddleEastArea = [35.991737,39.298213,72.78633,24.828731]
+    NZArea = [180,-52.621956, 163.888049,-31.69433]
+    MiddleEastArea = [35.991737,24.828731,72.78633,39.298213]
     
     WAIT_LIST = {0:ChinaArea, 1:NZArea, 2:MiddleEastArea}
+    native_run = True
 
     def exsit_native_path(file_path):
       return os.path.exists(file_path)
@@ -74,12 +75,11 @@ class FileUtils:
             
         return False
 
+
+
     def is_overlap(bbox1, bbox2):
-        x1 = max(bbox1[0],bbox2[0]) #108
-        y1 = max(bbox1[1],bbox2[1]) #130 
-        x2 = min(bbox1[2],bbox2[2]) #119
-        y2 = min(bbox1[3],bbox2[3]) #40
-        if x1 < x2 and y1 < y2:
-            return True
-        else:
-            return False
+        isOverlapping = FileUtils.is_overlap_line(bbox1[0],bbox1[2],bbox2[0],bbox2[2]) and FileUtils.is_overlap_line(bbox1[1],bbox1[3],bbox2[1],bbox2[3]) 
+        return isOverlapping
+
+    def is_overlap_line(min1, max1, min2, max2):
+        return min(max1, max2) - max(min1, min2) > 0
