@@ -72,7 +72,7 @@ Resources:
     Type: 'AWS::SQS::Queue'
     Properties:
       MessageRetentionPeriod: 1209600
-      VisibilityTimeout: 180
+      VisibilityTimeout: 900
 
   ItemlQueue:
     Type: 'AWS::SQS::Queue'
@@ -145,7 +145,7 @@ Resources:
       Role: !GetAtt lmdRole.Arn
       Policies:
       Description: Traverse the crawl queue
-      Timeout: 180
+      Timeout: 900
       Environment:
         Variables:
           CATALOG_CRAWL_QUEUE: !Ref CatalogCrawlQueue
