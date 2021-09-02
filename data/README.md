@@ -57,3 +57,9 @@ https://gdal.org/tutorials/raster_api_tut.html
 https://stacspec.org/
 
 https://www.linkedin.com/pulse/how-sunny-my-city-better-process-stac-sentinel2-lambda-alvaro-huarte
+
+
+https://aws.amazon.com/blogs/aws/iam-roles-for-ec2-instances-simplified-secure-access-to-aws-service-apis-from-ec2/
+
+
+https://aws.amazon.com/blogs/security/a-safer-way-to-distribute-aws-credentials-to-ec2/
