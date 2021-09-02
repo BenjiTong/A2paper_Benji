@@ -44,6 +44,8 @@
     ec2_group_name: zone_c_group
     subnet: subnet-0d2cf1aaf87f39d46
   when: initial
+  tags: 
+    - tomcat
 
 
 # 2 * webservers
