@@ -42,7 +42,8 @@
     server_type: tomcatservers    
     inst_count: 2
     ec2_group_name: zone_c_group
-    subnet: subnet-0d2cf1aaf87f39d46
+    subnet: subnet-c177d989 
+    #subnet-0d2cf1aaf87f39d46
   when: initial
   tags: 
     - tomcat
