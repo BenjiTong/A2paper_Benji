@@ -7,7 +7,7 @@
 export default {
     data: function () {
         return {
-            txtReg: /\?\bcode\b=.*#/
+            txtReg: /\?\bcode\b=/
         }
     },
 
@@ -21,11 +21,14 @@ export default {
         */
         // if url match regular expression, or redirect to index
         if (this.txtReg.test(url)) {
-            let beforeSharp = url.split('#')[0]
-            let afterQuestion = beforeSharp.split('?')[1]
+            let afterQuestion = url.split('?')[1]
             let paramPairs = afterQuestion.split('&')
             let code = paramPairs[0].split('=')[1]
             console.log(code)
+            // temporarily enter index
+            // Temp create fake token
+            sessionStorage.setItem('token', '123')
+            this.$router.push({ name: 'Index', query: { username: 'xxx' } })
         } else {
             this.$router.push({ name: 'Login' })
         }

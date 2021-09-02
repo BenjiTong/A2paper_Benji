@@ -1,5 +1,5 @@
 <template>
-    <div data-smooth-scroll-offset="77">
+    <div>
         <div class="nav-container">
             <div>
                 <nav class="bar bar-toggle">
@@ -75,80 +75,85 @@
                 </transition>
             </div>
         </div>
-        <div class="main-container">
-            <section>
-                <div class="container">
-                    <div class="masonry">
-                        <div
-                            class="
-                                masonry-filter-container
-                                text-center
-                                row
-                                justify-content-center
-                                align-items-center
-                            "
+        <section>
+            <div class="container">
+                <div
+                    class="
+                        masonry-filter-container
+                        text-center
+                        row
+                        justify-content-start
+                        align-items-center
+                    "
+                >
+                    <select
+                        class="col-2 my-dropdown-menu"
+                        v-model="selectedArea"
+                    >
+                        <option
+                            v-for="option in options"
+                            v-bind:value="option.value"
+                            v-bind:key="option.value"
                         >
-                            <span>City: </span>
-                            <div class="masonry-filter-holder">
-                                <div
-                                    class="masonry__filters"
-                                    data-filter-all-text="All Categories"
-                                >
-                                    <ul>
-                                        <li
-                                            class="active"
-                                            data-masonry-filter="*"
-                                        >
-                                            All Categories
-                                        </li>
-                                        <li data-masonry-filter="filter-1">
-                                            Filter 1
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <!--
-                        <div class="masonry__container row masonry--active">
-                            <div
-                                class="
-                                    masonry__item
-                                    col-md-6 col-12
-                                    filter-filter-1
-                                "
-                                data-masonry-filter="Filter 1"
-                            >
-                                <div class="video-cover border--round">
-                                    <div class="background-image-holder">
-                                        <img alt="image" src="img/blog-1.jpg" />
-                                    </div>
-                                    <div class="video-play-icon"></div>
-                                    <iframe
-                                        data-src="https://www.youtube.com/embed/6p45ooZOOPo?autoplay=1"
-                                        allowfullscreen="allowfullscreen"
-                                    ></iframe>
-                                </div>
-                                <span class="h4 inline-block">Video Title</span>
-                                <span>Detailed Description</span>
-                            </div>
-                        </div>
-                        -->
+                            {{ option.text }}
+                        </option>
+                    </select>
+                    <div class="my-checkbox">
+                        <input
+                            type="radio"
+                            id="year"
+                            value="0"
+                            v-model="pickedMode"
+                            class="col-1"
+                        />
+                        <label for="year">Year</label>
+                        <input
+                            type="radio"
+                            id="month"
+                            value="1"
+                            v-model="pickedMode"
+                            class="col-1"
+                        />
+                        <label for="month">Month</label>
+                        <input
+                            type="radio"
+                            id="day"
+                            value="2"
+                            v-model="pickedMode"
+                            class="col-1"
+                        />
+                        <label for="day">Day</label>
                     </div>
                 </div>
-            </section>
-            <my-footer></my-footer>
-        </div>
+                <div class="masonry__container row masonry--active">
+                    <div class="masonry__item col-md-6 col-12 filter-filter-1">
+                        <my-line-chart></my-line-chart>
+                        <span class="h4 inline-block">Video Title</span>
+                        <span>Detailed Description</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <my-footer></my-footer>
     </div>
 </template>
 
 <script>
 import MyFooter from '@/components/Footer'
+import MyLineChart from '@/components/MultiLineChart'
 
 export default {
     data: function () {
         return {
             isSideMenuShowing: false,
-            username: 'username'
+            username: 'username',
+            selectedArea: 0,
+            pickedMode: 0,
+            options: [
+                { text: 'China', value: 0 },
+                { text: 'New Zealand', value: 1 },
+                { text: 'Middle East', value: 2 }
+            ]
         }
     },
     methods: {
@@ -166,7 +171,8 @@ export default {
         }
     },
     components: {
-        MyFooter
+        MyFooter,
+        MyLineChart
     }
 }
 </script>
@@ -200,5 +206,16 @@ export default {
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 10;
     transition: all 0.2s ease-in;
+}
+
+.my-dropdown-menu {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    z-index: 9;
+}
+
+.my-checkbox {
+    padding-left: 1%;
 }
 </style>

@@ -7556,10 +7556,6 @@ input[type="submit"][type="submit"].btn--loading:after {
 .bg--primary button.btn.btn--primary-1 {
     border-color: #3a506b;
 }
-input,
-select {
-    height: 2.78571429em;
-}
 input.field-error {
     border-color: #eba8a8;
 }
