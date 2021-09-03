@@ -127,8 +127,10 @@
                 </div>
                 <div class="masonry__container row masonry--active">
                     <div class="masonry__item col-md-6 col-12 filter-filter-1">
-                        <my-line-chart></my-line-chart>
-                        <span class="h4 inline-block">Video Title</span>
+                        <my-props-line-chart
+                            ref="lineChart"
+                        ></my-props-line-chart>
+                        <span class="h4 inline-block">Title</span>
                         <span>Detailed Description</span>
                     </div>
                 </div>
@@ -140,15 +142,40 @@
 
 <script>
 import MyFooter from '@/components/Footer'
-import MyLineChart from '@/components/MultiLineChart'
+import MyPropsLineChart from '@/components/PropsMultiLineChart'
 
 export default {
     data: function () {
         return {
+            data: [{}, {}, {}],
+            /*
+            [
+                {
+                    lineChart: [
+                        dayData: null,
+                        monthData: null,
+                        yearData: null
+                    ]
+                },
+                {
+                    lineChart: [
+                        dayData: null,
+                        monthData: null,
+                        yearData: null
+                    ]
+                },
+                {
+                    lineChart: [
+                        dayData: null,
+                        monthData: null,
+                        yearData: null
+                    ]
+                }
+            ], */
             isSideMenuShowing: false,
             username: 'username',
-            selectedArea: 0,
-            pickedMode: 0,
+            selectedArea: 2,
+            pickedMode: -1,
             options: [
                 { text: 'China', value: 0 },
                 { text: 'New Zealand', value: 1 },
@@ -168,11 +195,97 @@ export default {
             // send message to server
             sessionStorage.removeItem('token')
             this.$router.push({ name: 'Login' })
+        },
+        resolveOriginData (index, originData) {
+            if (this.data[index].lineChart != null) return
+            let dayMap = new Map()
+            let monthMap = new Map()
+            let yearMap = new Map()
+            originData.forEach(function (d) {
+                let strDay = d.datetime.substr(0, 10)
+                let strMonth = strDay.substr(0, 8) + '01'
+                let strYear = strMonth.substr(0, 5) + '01-01'
+                if (dayMap.has(strDay)) {
+                    dayMap.get(strDay).radiance += +d.radiance
+                    dayMap.get(strDay).pixels += +d.pixels
+                } else {
+                    dayMap.set(strDay, { radiance: +d.radiance, pixels: +d.pixels })
+                }
+                if (monthMap.has(strMonth)) {
+                    monthMap.get(strMonth).radiance += +d.radiance
+                    monthMap.get(strMonth).pixels += +d.pixels
+                } else {
+                    monthMap.set(strMonth, { radiance: +d.radiance, pixels: +d.pixels })
+                }
+                if (yearMap.has(strYear)) {
+                    yearMap.get(strYear).radiance += +d.radiance
+                    yearMap.get(strYear).pixels += +d.pixels
+                } else {
+                    yearMap.set(strYear, { radiance: +d.radiance, pixels: +d.pixels })
+                }
+            })
+            console.log(monthMap)
+            console.log(yearMap)
+            let dayData = {
+                y: 'radiance / pixels',
+                series: [{ name: this.options[index].text, values: [] }],
+                dates: []
+            }
+            let monthData = {
+                y: 'radiance / pixels',
+                series: [{ name: this.options[index].text, values: [] }],
+                dates: []
+            }
+            let yearData = {
+                y: 'radiance / pixels',
+                series: [{ name: this.options[index].text, values: [] }],
+                dates: []
+            }
+            dayMap.forEach((value, key) => {
+                dayData.dates.push(new Date(key))
+                dayData.series[0].values.push(value.radiance / value.pixels)
+            })
+            monthMap.forEach((value, key) => {
+                monthData.dates.push(new Date(key))
+                monthData.series[0].values.push(value.radiance / value.pixels)
+            })
+            yearMap.forEach((value, key) => {
+                yearData.dates.push(new Date(key))
+                yearData.series[0].values.push(value.radiance / value.pixels)
+            })
+            this.data[index].lineChart = [yearData, monthData, dayData]
+            console.log(this.data[index])
+            if (this.selectedArea === index) {
+                this.resetData(this.selectedArea)
+            }
+        },
+        resetData () {
+            if (this.pickedMode >= 0 && this.data[this.selectedArea].lineChart != null) {
+                this.$refs.lineChart.resetData(this.data[this.selectedArea].lineChart[this.pickedMode])
+            }
         }
+    },
+    watch: {
+        selectedArea: function (val) {
+            console.log('selectedArea ' + val)
+            this.resetData()
+        },
+        pickedMode: function (val) {
+            console.log('pickedMode ' + val)
+            this.resetData()
+        }
+    },
+    mounted () {
+        this.$http.get('/api/city?id=2').then((response) => {
+            // console.info(response.body)
+            this.resolveOriginData(2, response.body)
+        }, (response) => {
+            console.error(response)
+        })
     },
     components: {
         MyFooter,
-        MyLineChart
+        MyPropsLineChart
     }
 }
 </script>

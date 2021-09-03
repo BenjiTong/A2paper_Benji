@@ -5,6 +5,7 @@ import Login from '@/components/Login'
 import Redirect from '@/components/Redirect'
 import TestD3 from '@/components/TestD3'
 import MultiLineChart from '@/components/MultiLineChart'
+import TestEmptyPage from '@/components/TestEmptyPage'
 
 Vue.use(Router)
 
@@ -38,6 +39,11 @@ export default new Router({
             path: '/test/line_chart',
             name: 'TestLineChart',
             component: MultiLineChart
+        },
+        {
+            path: '/test/empty',
+            name: 'TestEmptyPage',
+            component: TestEmptyPage
         }
     ]
 })
