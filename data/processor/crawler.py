@@ -23,6 +23,7 @@ def url_to_json(url: str):
             return json.loads(content)
     except Exception as e:
         print('[ERROR] url load error:{}'.format(url))
+    return None
     
 
 def get_links(catalog: json, url: str):
@@ -54,7 +55,12 @@ def native_handle_sqs(event, context):
     for record in records:    
         url = record['body']
         print('[INFO] process filename:{}'.format(url))
+        if url.__contains__('/201204/') or url.__contains__('/201205/') or url.__contains__('/201206/'):
+            print('[INFO] {} already process!'.format(url))
+            continue
         catalog = url_to_json(url)
+        if catalog == None:
+            continue
         child_links, items = get_links(catalog, url)
         for clink in child_links:
             print('[INFO] Catalog inserted: ', clink)
@@ -69,6 +75,8 @@ def native_handle_sqs(event, context):
         print('[INFO] clink size:{} items size:{}'.format(str(len(child_links)), str(len(items))))
         for item in items:
             itr = url_to_json(item)
+            if itr == None:
+                continue
             for idx, area in wait_area.items():
                 if FileUtils.is_overlap(area, itr['bbox']):
                     result = {

@@ -43,7 +43,6 @@ import org.apache.http.impl.cookie.DefaultCookieSpec;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
-import org.apache.http.ssl.TrustStrategy;
 
 
 

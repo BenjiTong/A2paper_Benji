@@ -58,7 +58,11 @@ def process(item_path, bbox, date_time, city_id):
     #     s3.download_file(bucket_name, prefix_path, file_name)
     # calculate intersects
     wait_geometry = OgrCommonUtils.create_geometry_from_bbox(area[0],area[1],area[2],area[3])
-    s3_dataset = gdal.Open(file_name, gdal.GA_ReadOnly)
+    try:
+        s3_dataset = gdal.Open(file_name, gdal.GA_ReadOnly)
+    except Exception as e:
+        print('[ERROR] GDAL get file error {}'.format(e))
+        return
     s3_extent = GdalCommonUtils.get_envelope(s3_dataset)
     s3_geometry = OgrCommonUtils.create_geometry_from_bbox(s3_extent[0],s3_extent[1],s3_extent[2],s3_extent[3])
     if not wait_geometry.Intersects(s3_geometry):

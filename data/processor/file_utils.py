@@ -36,7 +36,7 @@ class FileUtils:
     Provides utility IO file functions.
     """
     ChinaArea = [108.990515,20.319485,130.478558,40.992357]
-    NZArea = [180,-52.621956, 163.888049,-31.69433]
+    NZArea = [163.888049,-52.621956, 180, -31.69433]
     MiddleEastArea = [35.991737,24.828731,72.78633,39.298213]
     
     WAIT_LIST = {0:ChinaArea, 1:NZArea, 2:MiddleEastArea}
