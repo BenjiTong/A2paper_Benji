@@ -183,3 +183,16 @@ data/processor/.DS_Store
 data/crawler_packaged_template.yaml
 data/processor/__pycache__/*
 data/processor/__pycache__/sns_processor.cpython-38.pyc
+paper/ppt.aux
+paper/ppt.bbl
+paper/ppt.bcf
+paper/ppt.blg
+paper/ppt.nav
+paper/ppt.out
+paper/ppt.snm
+paper/ppt.synctex.gz
+paper/ppt.toc
+paper/ppt.vrb
+paper/ppt.run.xml
+paper/main.run.xml
+paper/main.bcf
