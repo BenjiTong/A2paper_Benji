@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.servlet.view.InternalResourceView;
 @Controller
 @ResponseStatus(HttpStatus.MOVED_PERMANENTLY)
 public class AppErrorController implements ErrorController{
@@ -15,8 +15,8 @@ public class AppErrorController implements ErrorController{
     @RequestMapping(PATH)
     @ResponseBody
     public ModelAndView getErrorPath() {
-        RedirectView red = new RedirectView("/",true);
-        red.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+        InternalResourceView red = new InternalResourceView("/",true);
+        //red.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
         return new ModelAndView(red);
     }
 
