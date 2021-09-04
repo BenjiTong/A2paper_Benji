@@ -26,7 +26,7 @@ export default new Router({
             component: Login
         },
         {
-            path: '/oauth/redirect',
+            path: '/redirect',
             name: 'OauthRedirect',
             component: Redirect
         },
