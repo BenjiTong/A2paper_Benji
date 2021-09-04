@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/awselb")
 public class GithubLogController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
