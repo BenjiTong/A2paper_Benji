@@ -23,13 +23,13 @@ public class HelloController {
     private final MainRepository mainRepository;
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @GetMapping("/")
-    public String hello(Model model, @RequestParam(value="name", required=false, defaultValue="World") String name) {
-        model.addAttribute("name", name);
-        long cnt = mainRepository.count();
-        logger.debug("get from db:" + cnt);
-        return "hello";
-    }
+    // @GetMapping("/")
+    // public String hello(Model model, @RequestParam(value="name", required=false, defaultValue="World") String name) {
+    //     model.addAttribute("name", name);
+    //     long cnt = mainRepository.count();
+    //     logger.debug("get from db:" + cnt);
+    //     return "hello";
+    // }
 
     @GetMapping("/city")
     public ResponseEntity<List<MainObj>> getMainObjByCityId(Model model, @RequestParam(value="id", required=true, defaultValue="0") Integer cityId) {
