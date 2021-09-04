@@ -27,7 +27,7 @@ module.exports = {
                 }
             },
             '/awselb': {
-                target: 'http://httpelb-1499061197.ap-southeast-1.elb.amazonaws.com/',
+                target: 'http://httpelb-1499061197.ap-southeast-1.elb.amazonaws.com/awselb/',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/awselb': ''
