@@ -151,7 +151,6 @@ java/.DS_Store
 
 Frontend/.DS_Store
 Frontend/node_modules/
-Frontend/dist/
 Frontend/npm-debug.log*
 Frontend/yarn-debug.log*
 Frontend/yarn-error.log*
