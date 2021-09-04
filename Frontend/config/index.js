@@ -25,6 +25,13 @@ module.exports = {
                 pathRewrite: {
                     '^/github': ''
                 }
+            },
+            '/awselb': {
+                target: 'http://httpelb-1499061197.ap-southeast-1.elb.amazonaws.com/',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/awselb': ''
+                }
             }
         },
 
