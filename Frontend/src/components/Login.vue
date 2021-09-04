@@ -47,15 +47,15 @@ export default {
                     getCodeURL: 'https://github.com/login/oauth/authorize',
                     oauthAppDetails: [{
                         client_id: '42a45d2fefb71837398e',
-                        redirectURL: 'http://localhost:8888/oauth/redirect'
+                        redirectURL: 'http://localhost:8888/redirect'
                     },
                     {
                         client_id: 'fc1c0102b2b1baf844e3',
-                        redirectURL: 'http://106.15.196.187/oauth/redirect'
+                        redirectURL: 'http://106.15.196.187/redirect'
                     },
                     {
                         client_id: 'c04fa22c7aa981ba6419',
-                        redirectURL: 'http://httpelb-1499061197.ap-southeast-1.elb.amazonaws.com/oauth/redirect'
+                        redirectURL: 'http://httpelb-1499061197.ap-southeast-1.elb.amazonaws.com/redirect'
                     }
                     ]
                 }
