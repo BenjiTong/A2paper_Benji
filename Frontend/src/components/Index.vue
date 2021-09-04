@@ -276,7 +276,7 @@ export default {
         }
     },
     mounted () {
-        this.$http.get('/api/city?id=2').then((response) => {
+        this.$http.get('/awselb/city?id=2').then((response) => {
             // console.info(response.body)
             this.resolveOriginData(2, response.body)
         }, (response) => {
