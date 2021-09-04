@@ -14,6 +14,7 @@ public class AppErrorController implements ErrorController{
     private final static String PATH = "/error";
     @RequestMapping(PATH)
     @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
     public ModelAndView getErrorPath() {
         InternalResourceView red = new InternalResourceView("/",true);
         //red.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
