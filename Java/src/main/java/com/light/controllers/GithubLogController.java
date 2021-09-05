@@ -1,11 +1,19 @@
 package com.light.controllers;
 
 import com.alibaba.fastjson.JSONArray;
+import com.amazonaws.services.secretsmanager.AWSSecretsManager;
+import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
+import com.amazonaws.services.secretsmanager.model.GetSecretValueRequest;
+import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.light.util.GithubConstant;
 import com.light.util.HttpsUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +35,9 @@ import java.util.Map;
 public class GithubLogController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private String secret;
+    private ObjectMapper mapper = new ObjectMapper();
+
     // @Autowired
     // private IGithubService githubService;
     // The callback address
@@ -39,7 +51,7 @@ public class GithubLogController {
         if (StringUtils.isNotBlank(code) && StringUtils.isNotBlank(state)) {
             HttpsUtil http = new HttpsUtil();
             // Request a token through code
-            String token_url = GithubConstant.TOKEN_URL.replace("CODE", code);
+            String token_url = GithubConstant.TOKEN_URL.replace("CODE", code).replace("CLIENT_SECRET", getSecret());
             // Put the String into the map
             String responseStr = http.doGetForString(token_url);
             Map<String, Object> resMap = urlStringToMap(responseStr);
@@ -70,6 +82,49 @@ public class GithubLogController {
         return "main";
     }
 
+    public String getSecret() {
+        return secret;
+    }
+
+    @Autowired
+    public void setSecret() {
+        
+        String secretName = "a2_login_secrets";
+        String region = "ap-southeast-1";
+    
+        AWSSecretsManager client  = AWSSecretsManagerClientBuilder.standard()
+                                        .withRegion(region)
+                                        .build();
+    
+        GetSecretValueRequest getSecretValueRequest = new GetSecretValueRequest()
+                        .withSecretId(secretName);
+        GetSecretValueResult getSecretValueResult = null;
+    
+        try {
+            getSecretValueResult = client.getSecretValue(getSecretValueRequest);
+        } catch (Exception e) {
+            logger.error("get github secret from secretsmanager failed", e);
+            throw e;
+        } 
+    
+        // Decrypts secret using the associated KMS CMK.
+        // Depending on whether the secret is a string or binary, one of these fields will be populated.
+        String json;
+        if (getSecretValueResult.getSecretString() != null) {
+            json = getSecretValueResult.getSecretString();
+        }
+        else {
+            json= new String(Base64.getDecoder().decode(getSecretValueResult.getSecretBinary()).array());
+        }
+        JsonNode jsonObject;
+        try {
+            jsonObject = mapper.readTree(json);
+            this.secret = jsonObject.get("CLIENT_SECRET").asText();
+        } catch (Exception e) {
+            logger.error("secrets format error: ", e);
+        }
+    }
+
     @RequestMapping("/oauth/token")
     public ResponseEntity<Map<String,String>> token(String code, String state, Model model, HttpServletRequest req, HttpSession session) throws Exception {
         Map<String,String> map = new HashMap<>();
@@ -78,7 +133,7 @@ public class GithubLogController {
             return new ResponseEntity<Map<String,String>>(map,HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
         HttpsUtil http = new HttpsUtil();
-        String token_url = GithubConstant.TOKEN_URL.replace("CODE", code);
+        String token_url = GithubConstant.TOKEN_URL.replace("CODE", code).replace("CLIENT_SECRET", getSecret());
         String responseStr = http.doGetForString(token_url);
         Map<String, Object> resMap = urlStringToMap(responseStr);
             
