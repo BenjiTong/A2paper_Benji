@@ -55,7 +55,7 @@ def native_handle_sqs(event, context):
     for record in records:    
         url = record['body']
         print('[INFO] process filename:{}'.format(url))
-        if url.__contains__('/201208/') or url.__contains__('/201209/') or url.__contains__('/201204/') or url.__contains__('/201205/') or url.__contains__('/201206/') or url.__contains__('/201207/'):
+        if url.__contains__('/201209/') or url.__contains__('/201210/') or url.__contains__('/201208/') or url.__contains__('/201209/') or url.__contains__('/201204/') or url.__contains__('/201205/') or url.__contains__('/201206/') or url.__contains__('/201207/'):
             print('[INFO] {} already process!'.format(url))
             continue
         catalog = url_to_json(url)

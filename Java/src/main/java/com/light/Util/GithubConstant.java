@@ -2,9 +2,9 @@ package com.light.util;
 
 public class GithubConstant {
 
-    public static final String CLIENT_ID="952b74100002a9ff5430";
+    public static final String CLIENT_ID="c04fa22c7aa981ba6419";
 
-    public static final String CLIENT_SECRET="b7021233ca275c55c68dd1b19b3702b20e871dc3";
+    public static final String CLIENT_SECRET="bdb66391bf8b1eff8f18fc84357cfabedfe03e4c";
 
     public static final String CALLBACK = "http://localhost:8888/oauth/redirect";
 
