@@ -36,18 +36,19 @@ import MyFooter from '@/components/Footer'
 export default {
     data: function () {
         return {
-            deployMode: 2, // 0 local 1 ali 2 aws
             signInWays: [
                 { id: 0, label: 'Github' }
             ],
             wayDetails: [ // way refers to github/facebook/..
                 {
                     scope: 'read:user',
-                    state: 'A2Inc', // An unguessable random string. It is used to protect against cross-site request forgery attacks.
+                    state: 'A2inc', // An unguessable random string. It is used to protect against cross-site request forgery attacks.
                     getCodeURL: 'https://github.com/login/oauth/authorize',
                     oauthAppDetails: [{
-                        client_id: '42a45d2fefb71837398e',
-                        redirectURL: 'http://localhost:8888/oauth/redirect'
+                        // client_id: '42a45d2fefb71837398e',
+                        client_id: 'c04fa22c7aa981ba6419',
+                        // redirectURL: 'http://localhost:8888/oauth/redirect'
+                        redirectURL: 'http://httpelb-1499061197.ap-southeast-1.elb.amazonaws.com/oauth/redirect'
                     },
                     {
                         client_id: 'fc1c0102b2b1baf844e3',
@@ -92,7 +93,7 @@ export default {
     computed: {
         formatGitHubCodeURL: function () {
             let wayDetail = this.wayDetails[0]
-            let oauthAppDetail = wayDetail.oauthAppDetails[this.deployMode]
+            let oauthAppDetail = wayDetail.oauthAppDetails[this.$deployMode]
 
             return wayDetail.getCodeURL + ('?' + this.$querystring.stringify({
                 client_id: oauthAppDetail.client_id,

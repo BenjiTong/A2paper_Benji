@@ -15,11 +15,21 @@ Vue.prototype.$querystring = querystring
 Vue.use(VueResource)
 
 Vue.config.productionTip = false
+Vue.http.options.emulateJSON = true
+
+// setting
+Vue.prototype.$deployMode = 0 // 0 local 1 ali 2 aws
 
 /* eslint-disable no-new */
 
-function fakeAuth () {
+function auth () {
     if (sessionStorage['token'] != null) {
+        /*
+        this.$http.post('/awselb/oauth/islogin', { token: code, state: 'A2inc' }).then((response) => {
+            console.log(response.body)
+        }, (response) => {
+            console.error(response)
+        }) */
         return true
     } else {
         return false
@@ -27,7 +37,7 @@ function fakeAuth () {
 }
 
 router.beforeEach((to, from, next) => {
-    if (to.meta.requireAuth && !fakeAuth()) {
+    if (to.meta.requireAuth && !auth()) {
         // Check login state
         next({ path: '/login' })
     } else {
