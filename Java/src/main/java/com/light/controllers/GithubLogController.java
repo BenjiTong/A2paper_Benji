@@ -126,11 +126,11 @@ public class GithubLogController {
     }
 
     @RequestMapping("/oauth/token")
-    public ResponseEntity<Map<String,String>> token(String code, String state, Model model, HttpServletRequest req, HttpSession session) throws Exception {
-        Map<String,String> map = new HashMap<>();
+    public ResponseEntity<Map<String,Object>> token(String code, String state, Model model, HttpServletRequest req, HttpSession session) throws Exception {
+        Map<String,Object> map = new HashMap<>();
         if (! StringUtils.isNotBlank(code) ||  !StringUtils.isNotBlank(state)) {
             map.put("r", "no token");
-            return new ResponseEntity<Map<String,String>>(map,HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+            return new ResponseEntity<Map<String,Object>>(map,HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
         HttpsUtil http = new HttpsUtil();
         String token_url = GithubConstant.TOKEN_URL.replace("CODE", code).replace("CLIENT_SECRET", getSecret());
@@ -138,8 +138,11 @@ public class GithubLogController {
         Map<String, Object> resMap = urlStringToMap(responseStr);
             
         if (resMap.get("access_token") == null) {
+            if (resMap.get("error") != null) {
+                map.put("desc", resMap.get("error").toString());
+            }
             map.put("r", "error code");
-            return new ResponseEntity<Map<String,String>>(map,HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+            return new ResponseEntity<Map<String,Object>>(map,HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
         // //Access Token
         String token = resMap.get("access_token").toString();
@@ -157,11 +160,8 @@ public class GithubLogController {
         session.setAttribute("code", code);
         session.setAttribute("token", token);
         map.put("token", token);
-        map.put("user", responseStr);
-        
-        
-
-        return new ResponseEntity<Map<String,String>>(map,HttpStatus.OK);
+        map.put("user", JSONArray.parse(responseStr));
+        return new ResponseEntity<Map<String,Object>>(map,HttpStatus.OK);
     }
 
     @RequestMapping("/oauth/islogin")
