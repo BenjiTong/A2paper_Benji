@@ -42,13 +42,12 @@ export default {
             wayDetails: [ // way refers to github/facebook/..
                 {
                     scope: 'read:user',
-                    state: 'A2inc', // An unguessable random string. It is used to protect against cross-site request forgery attacks.
                     getCodeURL: 'https://github.com/login/oauth/authorize',
                     oauthAppDetails: [{
-                        // client_id: '42a45d2fefb71837398e',
-                        client_id: 'c04fa22c7aa981ba6419',
-                        // redirectURL: 'http://localhost:8888/oauth/redirect'
-                        redirectURL: 'http://httpelb-1499061197.ap-southeast-1.elb.amazonaws.com/oauth/redirect'
+                        client_id: '42a45d2fefb71837398e',
+                        // client_id: 'c04fa22c7aa981ba6419',
+                        redirectURL: 'http://localhost/oauth/redirect'
+                        // redirectURL: 'http://httpelb-1499061197.ap-southeast-1.elb.amazonaws.com/oauth/redirect'
                     },
                     {
                         client_id: 'fc1c0102b2b1baf844e3',
@@ -93,12 +92,12 @@ export default {
     computed: {
         formatGitHubCodeURL: function () {
             let wayDetail = this.wayDetails[0]
-            let oauthAppDetail = wayDetail.oauthAppDetails[this.$deployMode]
+            let oauthAppDetail = wayDetail.oauthAppDetails[this.$global.deployMode]
 
             return wayDetail.getCodeURL + ('?' + this.$querystring.stringify({
                 client_id: oauthAppDetail.client_id,
                 scope: wayDetail.scope,
-                state: wayDetail.state,
+                state: this.$global.state,
                 redirect_uri: oauthAppDetail.redirectURL
             }))
         }
