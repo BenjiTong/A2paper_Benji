@@ -129,7 +129,7 @@ public class GithubLogController {
     public ResponseEntity<Map<String,Object>> token(String code, String state, Model model, HttpServletRequest req, HttpSession session) throws Exception {
         Map<String,Object> map = new HashMap<>();
         if (! StringUtils.isNotBlank(code) ||  !StringUtils.isNotBlank(state)) {
-            map.put("r", "no token");
+            map.put("r", "no code");
             return new ResponseEntity<Map<String,Object>>(map,HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
         HttpsUtil http = new HttpsUtil();

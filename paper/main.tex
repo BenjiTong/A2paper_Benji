@@ -138,7 +138,7 @@ this is the explanation
 this is the explanation
 
 \subsection{Ansible}
-Ansible is a famous open source deployment platform, which is convenient to enable the infrastructure as code. 
+Ansible is a famous open source deployment platform, which is convenient to enable the infrastructure as code (IaC). 
 It is the main tool to deploy most of the services in this project. Especially, a single EC2 instance with public 
 IP is provided for it. But AWS service has to provision services by aws-cli instead of Ansible itself. There are still 
 some libaries providing these functions but mostly are from external part.
@@ -166,13 +166,53 @@ the temporary approaches. It is also possible to deal with the cloud and other d
 other details are described as below.
 
 \subsection{Whole infrastructure}
-The main architecture is shown as Fig.~\ref{fig2}. 
+The main architecture is shown as Fig.~\ref{fig2}. First of all, two kinds of IaC platform, which are Ansible and CloudFormation.
+Ansible is the first choice that can be esily used in most of situations. When some service need to configure complicatedly, CloudFormation is 
+better. Secondly, NAT and ELB are the only entrance to the project. That is the best practice for network security that can mitigate the effects 
+of public cyberattacks. Thirdly, IAM roles are used at all kinds of important scenarios, for example, deployment, database visiting, various services visiting.
+
+The source code of entire demo was maintained on Github. The repository URL is https://github.com/A2Inc/A2. There are various languages in it including 
+CSS, Vue, Java, JavaScript, Python, Tex. The contributions of team on this demo are shown on Github as Fig.~\ref{fig3}.
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=260pt]{images/github.png}}
+    \caption{Overview of Github}
+    \label{fig3}
+\end{figure}
+
+Java, Python and Vue are the most useful tool in this demo. The reason of choosing Java is that almost all of the team members has been good at it. Python 
+has a lot of library processing images, so it is the best choice for geospatial imagery. Vue has powerful frontend capabilities, so it is the best for a 
+visualisation demo. Latex are used to generate the report and slides.
 
 \subsection{Frontend}
 
 \subsection{Login}
-
+ 
 \subsection{Data processing}
+The pictures in S3 are based on two essential formats, which is STAC and COG. The satellites generate them everyday. World Bank organized the global night lights project 
+to store these files in S3. When it comes to deal with the satellite imagery, Python has a lot of easy libraries for geospatial calculating. GDAL is the most useful one. 
+It is integrated with Python very well, and is very good at reading and writing raster or vector geospatial file formats.
+
+Two Lambda functions are used for processing them. The first one is to analyse the STAC protocol files. Boundary box can be found from a STAC file, so it is easy to index
+all the imagery together by it and then to find the specific area by it. Root STAC file is the first file we processing, which has all of the child links as json files. 
+Following the child links, there are the list itmes including the COG file URL. COG file is commonly too large to open directly. GDAL can open it easily and calculate radiance 
+value in the file. In the second Lambda function, messages attached COG URL information exchanged by SQS service from the first Lambda function. Because of the complexity 
+of GDAL computation, the second Lambda function is slower than the first one.
+
+The second Lambda function is the main logic of the data processing. First of all, choosing cities or areas is a deep issue. The original design was to show the every administrative 
+cities. But the global administrative cities geospatial data is very difficult to get. Even though Global Administrative Unit Layers (GAUL) data is provided by Food and 
+Agriculture Organization of the United Nation (FAO) \cite{GlobalAd98:online}, the format of these files still needed to research more. So the research areas were reduced 
+to three specific areas, such as east of China, Middle East and New Zealand. Secondly, these three areas are defined in advance because they represent the areas of developed, 
+developing and war. The radiance of these areas would show very different patterns. And reducing areas can help the function processing more quickly. Thirdly, calculating the 
+radiance for every COG file is the core computation. There are intersection areas between the COG file and these three research places. And every pixel in the COG file stores 
+a radiance value for this geospatial point. In the World Bank document, there are some special definitions about the value details, such as -999.3 means no-data value, -1.5 
+means the beginning of the data range \cite{WorldBan13:online}. The value less than 3 could be disruption value. So all of the numbers which are more than 3 could be the 
+sutiable value. At the end, all of the processed information is stored in RDS service. They are date, boundary box, radiance, pixels and so on.
+
+When it comes to the RDS, it is neccessary to introduce the master and slave configuration. Because this global night lights data is stored at us-east-1 region and team members 
+use ap-southeast-1 region, master database is installed at us-east-1 region which is closed to S3 data, and slave database is at another region. The cross-region RDS is 
+provisioned by CloudFormation because there is a ready template. It has to be mentioned that the cross-region cost is not cheap as other services.
+
 
 \subsection{Testing}
 
@@ -180,7 +220,7 @@ The main architecture is shown as Fig.~\ref{fig2}.
 
 \section{Security Considerations}
 
-\subsection{Networking}
+\subsection{Network}
 
 \subsection{User}
 
