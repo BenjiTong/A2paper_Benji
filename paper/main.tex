@@ -49,7 +49,7 @@ email address or ORCID}
 \textit{name of organization (of Aff.)}\\
 City, Country \\
 email address or ORCID}
-}
+} 
 
 \maketitle
 
@@ -132,7 +132,9 @@ this is the explanation
 this is the explanation
  
 \subsection{Spring-boot}
-this is the explanation
+Spring-boot is a Java web framework that can help developer build their web instance very quickly. It is easy to build a 
+stand-alone, production-grade application by it \cite{SpringBo66:online}. Because of its features such as no code generation 
+and no requirement for XML configuration, it is the best choose for a Java development team.
 
 \subsection{Oauth github}
 this is the explanation
@@ -193,7 +195,14 @@ The pictures in S3 are based on two essential formats, which is STAC and COG. Th
 to store these files in S3. When it comes to deal with the satellite imagery, Python has a lot of easy libraries for geospatial calculating. GDAL is the most useful one. 
 It is integrated with Python very well, and is very good at reading and writing raster or vector geospatial file formats.
 
-Two Lambda functions are used for processing them. The first one is to analyse the STAC protocol files. Boundary box can be found from a STAC file, so it is easy to index
+
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=260pt]{images/dataprocess.png}}
+    \caption{Data processing}
+    \label{fig4}
+\end{figure}
+
+Two Lambda functions are used for processing them, shown as Fig.~\ref{fig4}. The first one is to analyse the STAC protocol files. Boundary box can be found from a STAC file, so it is easy to index
 all the imagery together by it and then to find the specific area by it. Root STAC file is the first file we processing, which has all of the child links as json files. 
 Following the child links, there are the list itmes including the COG file URL. COG file is commonly too large to open directly. GDAL can open it easily and calculate radiance 
 value in the file. In the second Lambda function, messages attached COG URL information exchanged by SQS service from the first Lambda function. Because of the complexity 
@@ -217,14 +226,33 @@ provisioned by CloudFormation because there is a ready template. It has to be me
 \subsection{Testing}
 
 \subsection{Project management}
+Project management is also a big chanllenge in this special period. Scrum development method was chosen from the first day because two of members
+had already experienced this method. This iterative approach towards the completion of a project can lead the team to the success.
+
+It is important that some tools let the team work like a native team. All of the team members are from China, but nobody knew each other before. 
+So at the first day, the IM platform named Lark, which was widely used in the work place in China, was chosen by team members. Java is the first 
+language in the team because team members are almost good at it. By Github, all of the codes can be easily shared with members and easily taken 
+control of its version. Remote cooperation is not a easy thing, so team members create a event for vedio meeting everyday. At the same time, it 
+is also the agile standup meeting everyday. With the development and research process, some members have to stop to learn more things about the 
+lack of relative knowledge. For example, none of members are good at some key technologies, such as geospatial imagery processing, Vue, AWS usage. 
+So the development plan was always disrupted because of the learning. Thanks to the agile method, the development is not influenced too much by 
+these disruptions. 
+
+Because the members were not sharing the true space in a meeting room, the development atmosphere was a little bit strange. It is difficult to know 
+every member's status, so the enthusiasm of development is of critical importance. Somebody went about their tasks with little enthusiasm, and the 
+result would be bad at that aspect. At that time, the role of scrum master was very useful, it ensure the entire development schedule.
 
 \section{Security Considerations}
+Secruity is the important thing in the development. Although some services can enhance the security, but they are usually very expensive, for example, 
+NAT can islote the safer network. There are a lot of details contributing to the security together.
+
+\subsection{IAM}
 
 \subsection{Network}
 
-\subsection{User}
+\subsection{Customer}
 
-\subsection{IAM}
+
 
 \section{Team members and individual contribution within the team}
 \begin{itemize}
